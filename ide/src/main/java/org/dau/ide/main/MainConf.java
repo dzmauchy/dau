@@ -1,6 +1,7 @@
 package org.dau.ide.main;
 
 import javafx.stage.Stage;
+import org.dau.ui.icons.IconFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,7 +10,7 @@ import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
 
 @Configuration(proxyBeanMethods = false)
-@ComponentScan(basePackages = "org.dau.ide.main")
+@ComponentScan
 public class MainConf {
 
   private final Stage primaryStage;
@@ -20,13 +21,15 @@ public class MainConf {
   }
 
   @Bean
-  @Main
+  @MainQualifier
   public Stage primaryStage() {
     return primaryStage;
   }
 
   @EventListener
   public void onStart(ContextStartedEvent event) {
+    primaryStage.getIcons().add(IconFactory.image("icons/schema.png"));
+    primaryStage.setTitle("IDE");
     primaryStage.show();
   }
 }

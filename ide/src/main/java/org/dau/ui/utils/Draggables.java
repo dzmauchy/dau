@@ -24,7 +24,7 @@ public final class Draggables {
       if (ev.getSource() != handle) {
         return;
       }
-      base.set(new Point2D(ev.getSceneX(), ev.getSceneY()));
+      base.set(node.getParent().sceneToLocal(ev.getSceneX(), ev.getSceneY()));
       old.set(new Point2D(node.getLayoutX(), node.getLayoutY()));
       oldEffect.set(node.getEffect());
       node.setEffect(new Glow(0.5));
@@ -46,8 +46,9 @@ public final class Draggables {
     handle.addEventFilter(MOUSE_DRAGGED, ev -> {
       var b = base.get();
       if (b != null && ev.getSource() == handle) {
-        var newX = ev.getSceneX() - base.get().getX() + old.get().getX();
-        var newY = ev.getSceneY() - base.get().getY() + old.get().getY();
+        var lp = node.getParent().sceneToLocal(ev.getSceneX(), ev.getSceneY());
+        var newX = lp.getX() - base.get().getX() + old.get().getX();
+        var newY = lp.getY() - base.get().getY() + old.get().getY();
         node.relocate(newX, newY);
         ev.consume();
       }

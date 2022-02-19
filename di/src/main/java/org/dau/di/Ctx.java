@@ -8,26 +8,32 @@ import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.NonNull;
 
+import java.util.Base64;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import static java.lang.System.identityHashCode;
+import static java.nio.ByteBuffer.allocate;
 import static java.util.Objects.requireNonNull;
 
 public final class Ctx extends AnnotationConfigApplicationContext {
 
   private static final Logger LOGGER = Logger.getLogger("contexts");
+  private static final Base64.Encoder ENCODER = Base64.getUrlEncoder().withoutPadding();
 
   private final ConcurrentHashMap<String, Ctx> children = new ConcurrentHashMap<>(16, 0.5f);
+  private final LinkedList<Object> roots = new LinkedList<>();
 
-  public Ctx(Ctx parent, String id, String name) {
+  public Ctx(Ctx parent, String name) {
+    super.setId(ENCODER.encodeToString(allocate(4).putInt(0, identityHashCode(this)).array()));
     setParent(parent);
-    setId(id);
     setDisplayName(name);
     var bf = getDefaultListableBeanFactory();
     bf.setAllowCircularReferences(false);
     bf.setAllowBeanDefinitionOverriding(false);
     if (parent != null) {
-      parent.children.compute(id, (k, old) -> {
+      parent.children.compute(getId(), (k, old) -> {
         if (old == null) {
           return this;
         } else {
@@ -37,8 +43,8 @@ public final class Ctx extends AnnotationConfigApplicationContext {
     }
   }
 
-  public Ctx(String id, String name) {
-    this(null, id, name);
+  public Ctx(String name) {
+    this(null, name);
   }
 
   @Override
@@ -48,7 +54,6 @@ public final class Ctx extends AnnotationConfigApplicationContext {
 
       private boolean shouldSkip(ApplicationEvent event) {
         if (event instanceof ApplicationContextEvent e) {
-          LOGGER.info(event::toString);
           if (e.getApplicationContext() != Ctx.this) {
             return true;
           }
@@ -59,6 +64,7 @@ public final class Ctx extends AnnotationConfigApplicationContext {
             return true;
           }
         }
+        LOGGER.info(event::toString);
         return false;
       }
 
@@ -116,6 +122,15 @@ public final class Ctx extends AnnotationConfigApplicationContext {
     } else {
       return e.getPath() + "/" + getId();
     }
+  }
+
+  public void addRoot(Object root) {
+    roots.add(root);
+  }
+
+  @Override
+  public void setId(@NonNull String id) {
+    throw new UnsupportedOperationException("Ctx id is immutable");
   }
 
   @NonNull

@@ -9,7 +9,11 @@ plugins {
 
 tasks.getByName("jar", Jar::class) {
   manifest {
-    attributes("Main-Class" to "org.dau.ide.IdeLauncher", "Add-Exports" to "javafx.controls/com.sun.javafx.css", "Automatic-Module-Name" to "dau.ide")
+    attributes(
+      "Main-Class" to "org.dau.ide.IdeLauncher",
+      "Add-Exports" to "javafx.controls/com.sun.javafx.css",
+      "Automatic-Module-Name" to "dau.ide"
+    )
   }
 }
 
@@ -28,4 +32,14 @@ tasks.register<Exec>("standaloneRun") {
   executable = "java"
   workingDir = projectDir.resolve("build").resolve("libs")
   args("-jar", "${project.name}-${project.version}.jar")
+}
+
+dependencies {
+  implementation(group = "org.eclipse.jdt", name = "org.eclipse.jdt.core", version = "3.28.0")
+  implementation(group = "org.slf4j", name = "slf4j-jdk14", version = "1.7.36")
+
+  implementation(group = "org.kordamp.ikonli", name = "ikonli-javafx", version = ikonliVersion)
+  for (lib in ikonliLibs) {
+    implementation(group = "org.kordamp.ikonli", name = "ikonli-$lib-pack", version = ikonliVersion)
+  }
 }

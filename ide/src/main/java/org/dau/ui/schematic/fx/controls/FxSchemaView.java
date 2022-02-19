@@ -15,6 +15,7 @@ import org.dau.ui.schematic.fx.model.FxBlock;
 import org.dau.ui.schematic.fx.model.FxBlockConnection;
 import org.dau.ui.schematic.fx.model.FxSchema;
 
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -28,20 +29,22 @@ public final class FxSchemaView extends StackPane {
 
   private static final double L = 10d;
   private static final double PHI = 0.3;
-  private static final Double[][] STROKES = {{}, {}, {}, {}, {8d, 4d}, {4d, 4d}, {8d, 8d}};
+  private static final Double[][] STROKES = {{}, {}, {}, {8d, 4d}, {4d, 4d}, {8d, 8d}};
   private static final Glow SELECT_EFFECT = new Glow(2d);
 
   private final Pane blockLayer = new Pane();
   private final Pane connectionLayer = new Pane();
-  private final FxSchema schema;
+  public final FxSchema schema;
   private final SetChangeListener<FxBlock> onBlockChange = this::onBlocksChange;
   private final SetChangeListener<FxBlockConnection> onConnectionChange = this::onConnectionsChange;
-  private final HashMap<String, FxBlockView> blockViewMap = new HashMap<>();
+  private final HashMap<Integer, FxBlockView> blockViewMap = new HashMap<>();
 
   public FxSchemaView(FxSchema schema) {
     this.schema = schema;
     blockLayer.setPickOnBounds(false);
+    blockLayer.setFocusTraversable(false);
     connectionLayer.setPickOnBounds(false);
+    connectionLayer.setFocusTraversable(false);
     getChildren().addAll(connectionLayer, blockLayer);
     schema.getBlocks().forEach(this::addBlock);
     schema.addBlockListener(new WeakSetChangeListener<>(onBlockChange));
@@ -51,7 +54,7 @@ public final class FxSchemaView extends StackPane {
   private void onBlocksChange(Change<? extends FxBlock> c) {
     if (c.wasRemoved()) {
       var b = c.getElementRemoved();
-      blockViewMap.remove(b.getId());
+      blockViewMap.remove(b.id);
       blockLayer.getChildren().removeIf(n -> {
         if (n instanceof FxBlockView v) {
           return v.block == b;
@@ -85,7 +88,7 @@ public final class FxSchemaView extends StackPane {
   private void addBlock(FxBlock block) {
     var view = new FxBlockView(block);
     blockLayer.getChildren().add(view);
-    blockViewMap.put(block.getId(), view);
+    blockViewMap.put(block.id, view);
   }
 
   private final class Conn extends Group {
@@ -98,14 +101,12 @@ public final class FxSchemaView extends StackPane {
     private final InvalidationListener onInvalidate = this::onInvalidate;
     private final FxConnectionPath path;
 
-    private boolean selected;
-
     private Conn(FxBlockConnection connection) {
       this.connection = connection;
       setPickOnBounds(false);
 
-      var outView = blockViewMap.get(connection.out().getBlock().getId());
-      var inView = blockViewMap.get(connection.in().getBlock().getId());
+      var outView = blockViewMap.get(connection.out().getBlock().id);
+      var inView = blockViewMap.get(connection.in().getBlock().id);
 
       x0p = outView.getOutputX(connection.out());
       y0p = outView.getOutputY(connection.out());
@@ -142,10 +143,10 @@ public final class FxSchemaView extends StackPane {
       if (x0 > x1) {
         double cy = FxSchemaView.this.getHeight() / 2d;
         double avgY = (y0 + y1) / 2d;
-        double h = connection.out().getBlock().getH() + connection.in().getBlock().getH();
+        double h = connection.out().getBlock().h.get() + connection.in().getBlock().h.get();
         double offset = avgY < cy ? -2d * h : 2d * h;
-        path.setControl1(connection.out().getBlock().getW() * 2d, y1 - y0);
-        path.setControl2(x1 - x0 - connection.in().getBlock().getW() * 2d, y1 - y0 + (y1 - y0 + offset));
+        path.setControl1(connection.out().getBlock().w.get() * 2d, y1 - y0);
+        path.setControl2(x1 - x0 - connection.in().getBlock().w.get() * 2d, y1 - y0 + (y1 - y0 + offset));
       } else {
         path.setControl1(2d * L, 0d);
         path.setControl2((x0 + x1) / 2d - x0, (y0 + y1 + (y1 - y0) / 1.5d) / 2d - y0);
@@ -157,7 +158,7 @@ public final class FxSchemaView extends StackPane {
       try {
         var md = MessageDigest.getInstance("MD5");
         md.update(connection.out().getId().getBytes(UTF_8));
-        md.update(connection.out().getBlock().getId().getBytes(UTF_8));
+        md.update(ByteBuffer.allocate(4).putInt(0, connection.out().getBlock().id).array());
         var bytes = md.digest();
         int r1 = toUnsignedInt(bytes[0]), r2 = toUnsignedInt(bytes[1]), r3 = toUnsignedInt(bytes[2]);
         int g1 = toUnsignedInt(bytes[3]), g2 = toUnsignedInt(bytes[4]), g3 = toUnsignedInt(bytes[5]);

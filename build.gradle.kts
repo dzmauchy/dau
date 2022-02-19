@@ -12,6 +12,17 @@ subprojects {
     mavenCentral()
   }
 
+  configurations.all {
+    resolutionStrategy.eachDependency {
+      if (requested.group == "org.apache.commons" && requested.name == "commons-lang3") {
+        useVersion("3.12.0")
+      }
+      if (requested.group == "org.apache.httpcomponents" && requested.name == "httpcore") {
+        useVersion("4.4.15")
+      }
+    }
+  }
+
   configure<JavaPluginExtension> {
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
@@ -31,9 +42,16 @@ subprojects {
   }
 
   when (name) {
+    "base" -> {
+      dependencies {
+        "compileOnly"(project(":runtime"))
+      }
+    }
     "ide" -> {
       dependencies {
         "implementation"(project(":di"))
+        "implementation"(project(":runtime"))
+
         for (lib in javafxLibs) {
           "implementation"(group = "org.openjfx", name = lib, version = javafxVersion)
           "implementation"(group = "org.openjfx", name = lib, version = javafxVersion, classifier = javafxClassifier)

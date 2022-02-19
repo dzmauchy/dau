@@ -1,102 +1,100 @@
 package org.dau.ui.schematic.fx.model;
 
 import javafx.beans.property.SimpleDoubleProperty;
-import org.dau.ui.schematic.layout.model.*;
+import javafx.beans.property.SimpleStringProperty;
+import org.dau.runtime.Block;
 
+import java.lang.reflect.Executable;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public final class FxBlock implements Block {
+public final class FxBlock {
 
-  private final FxSchema schema;
-  private final String id;
-  private final SimpleDoubleProperty x = new SimpleDoubleProperty(this, "x", 0);
-  private final SimpleDoubleProperty y = new SimpleDoubleProperty(this, "y", 0);
-  private final SimpleDoubleProperty w = new SimpleDoubleProperty(this, "w", 0);
-  private final SimpleDoubleProperty h = new SimpleDoubleProperty(this, "h", 0);
+  public final FxSchema schema;
+  public final int id;
+  public final Executable executable;
+
+  public final SimpleStringProperty name = new SimpleStringProperty(this, "name");
+
+  public final SimpleDoubleProperty x = new SimpleDoubleProperty(this, "x");
+  public final SimpleDoubleProperty y = new SimpleDoubleProperty(this, "y");
+  public final SimpleDoubleProperty w = new SimpleDoubleProperty(this, "w");
+  public final SimpleDoubleProperty h = new SimpleDoubleProperty(this, "h");
+
   private final LinkedHashMap<String, Input> inputs;
   private final LinkedHashMap<String, Output> outputs;
 
-  public FxBlock(FxSchema schema, String id, List<InputInfo> inputs, List<OutputInfo> outputs) {
+  public FxBlock(FxSchema schema, Executable executable) {
     this.schema = schema;
-    this.id = id;
-    this.inputs = new LinkedHashMap<>(inputs.size());
-    this.outputs = new LinkedHashMap<>(outputs.size());
-    for (var i : inputs) {
-      this.inputs.put(i.id(), new Input(i.id()));
+    this.id = schema.blockId();
+    this.executable = executable;
+    this.inputs = new LinkedHashMap<>(executable.getParameterCount());
+    this.outputs = new LinkedHashMap<>(1, 0.9f);
+    collectInputs();
+    outputs.put("*", new Output(executable, "*"));
+    collectOutputs(executable.getAnnotatedReturnType().getType());
+    this.name.set(getMetaName() + " " + id);
+  }
+
+  private void collectInputs() {
+    for (var p : executable.getParameters()) {
+      inputs.put(p.getName(), new Input(p));
     }
-    for (var o : outputs) {
-      this.outputs.put(o.id(), new Output(o.id()));
+  }
+
+  private void collectOutputs(Type type) {
+    if (type instanceof ParameterizedType t) {
+      collectOutputs(t.getRawType());
+    } else if (type instanceof Class<?> c) {
+      for (var m : c.getMethods()) {
+        if (m.getParameterCount() > 2) {
+          continue;
+        }
+        if (m.isSynthetic() || m.isBridge() || m.isVarArgs()) {
+          continue;
+        }
+        if (m.getDeclaringClass() == Object.class) {
+          continue;
+        }
+        outputs.put(m.getName(), new Output(m, m.getName()));
+      }
     }
-    this.schema.blocks.add(this);
   }
 
-  @Override
-  public FxSchema getSchema() {
-    return schema;
+  public String getVar() {
+    return "v_" + id;
   }
 
-  @Override
-  public String getId() {
-    return id;
+  public String getMetaName() {
+    var block = executable.getAnnotation(Block.class);
+    if (block != null) {
+      return block.value();
+    }
+    block = executable.getDeclaringClass().getAnnotation(Block.class);
+    if (block != null) {
+      return block.value();
+    }
+    return executable.getName();
   }
 
-  @Override
-  public double getX() {
-    return x.get();
-  }
-
-  @Override
-  public double getY() {
-    return y.get();
-  }
-
-  @Override
-  public double getW() {
-    return w.get();
-  }
-
-  @Override
-  public double getH() {
-    return h.get();
-  }
-
-  @Override
   public Input getInput(String id) {
     return inputs.get(id);
   }
 
-  @Override
   public Output getOutput(String id) {
     return outputs.get(id);
   }
 
-  @Override
   public Stream<Input> getInputs() {
     return inputs.values().stream();
   }
 
-  @Override
   public Stream<Output> getOutputs() {
     return outputs.values().stream();
-  }
-
-  public SimpleDoubleProperty xProperty() {
-    return x;
-  }
-
-  public SimpleDoubleProperty yProperty() {
-    return y;
-  }
-
-  public SimpleDoubleProperty wProperty() {
-    return w;
-  }
-
-  public SimpleDoubleProperty hProperty() {
-    return h;
   }
 
   public void remove() {
@@ -107,12 +105,12 @@ public final class FxBlock implements Block {
 
   @Override
   public int hashCode() {
-    return id.hashCode();
+    return id;
   }
 
   @Override
   public boolean equals(Object o) {
-    return o instanceof FxBlock b && id.equals(b.id);
+    return o instanceof FxBlock b && id == b.id;
   }
 
   @Override
@@ -120,91 +118,69 @@ public final class FxBlock implements Block {
     return "Block(" + id + ")";
   }
 
-  public final class Input implements BlockInput, BlockElement {
+  public final class Input {
 
-    private final String id;
-    private final SimpleDoubleProperty connectionPoint = new SimpleDoubleProperty(this, "connectionPoint", 0);
+    public final Parameter parameter;
 
-    public Input(String id) {
-      this.id = id;
+    public Input(Parameter parameter) {
+      this.parameter = parameter;
     }
 
-    @Override
     public String getId() {
-      return id;
+      return parameter.getName();
     }
 
-    @Override
-    public double getConnectionPoint() {
-      return connectionPoint.get();
-    }
-
-    @Override
     public FxBlock getBlock() {
       return FxBlock.this;
     }
 
-    public SimpleDoubleProperty connectionPointProperty() {
-      return connectionPoint;
-    }
-
     @Override
     public int hashCode() {
-      return Objects.hash(id, getBlock().id);
+      return Objects.hash(getId(), getBlock().id);
     }
 
     @Override
     public boolean equals(Object o) {
-      return o instanceof Input b && id.equals(b.id) && b.getBlock().equals(getBlock());
+      return o instanceof Input b && getId().equals(b.getId()) && b.getBlock().equals(getBlock());
     }
 
     @Override
     public String toString() {
-      return FxBlock.this + "@in:" + id;
+      return FxBlock.this + "@in:" + getId();
     }
   }
 
-  public final class Output implements BlockOutput, BlockElement {
+  public final class Output {
 
-    private final String id;
-    private final SimpleDoubleProperty connectionPoint = new SimpleDoubleProperty(this, "connectionPoint", 0);
+    public final Executable out;
+    public final String id;
 
-    public Output(String id) {
+    public Output(Executable out, String id) {
+      this.out = out;
       this.id = id;
     }
 
-    @Override
     public String getId() {
       return id;
     }
 
-    @Override
-    public double getConnectionPoint() {
-      return connectionPoint.get();
-    }
-
-    @Override
     public FxBlock getBlock() {
       return FxBlock.this;
     }
 
-    public SimpleDoubleProperty connectionPointProperty() {
-      return connectionPoint;
-    }
-
     @Override
     public int hashCode() {
-      return Objects.hash(id, getBlock().id);
+      return Objects.hash(getId(), getBlock().id);
     }
 
     @Override
     public boolean equals(Object o) {
-      return o instanceof Output b && id.equals(b.id) && b.getBlock().equals(getBlock());
+      return o instanceof Output b && getId().equals(b.getId()) && b.getBlock().equals(getBlock());
     }
 
     @Override
     public String toString() {
-      return FxBlock.this + "@out:" + id;
+      return FxBlock.this + "@out:" + getId();
     }
   }
 }

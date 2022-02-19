@@ -1,5 +1,5 @@
 .root {
-    -fx-base: rgb(50, 50, 50);
+    -fx-base: rgb(45, 45, 45);
     -fx-background: derive(-fx-base, -10%);
     -fx-color: rgb(40, 40, 40);
     -fx-control-inner-background: rgb(20, 20, 20);

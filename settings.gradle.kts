@@ -1,3 +1,3 @@
 rootProject.name = "dau"
 
-include("di", "ide")
+include("di", "runtime", "base", "ide")

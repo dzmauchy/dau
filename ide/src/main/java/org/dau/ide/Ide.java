@@ -2,8 +2,6 @@ package org.dau.ide;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.dau.di.Ctx;
 import org.dau.ide.logging.FxInitLogHandler;
@@ -15,10 +13,10 @@ import java.util.logging.Logger;
 
 public class Ide extends Application {
 
-  private final Ctx ctx = new Ctx("root", "Root");
+  private final Ctx ctx = new Ctx( "Root");
 
   @Override
-  public void init() throws Exception {
+  public void init() {
     //logging
     var rootLogger = Logger.getLogger("");
     var fxHandler = new FxLogHandler();
@@ -36,9 +34,7 @@ public class Ide extends Application {
   }
 
   @Override
-  public void start(Stage primaryStage) throws Exception {
-    var button = new Button("X");
-    primaryStage.setScene(new Scene(button, 800, 600));
+  public void start(Stage primaryStage) {
     ctx.registerBean(MainConf.class, () -> new MainConf(primaryStage));
     ctx.refresh();
     ctx.start();

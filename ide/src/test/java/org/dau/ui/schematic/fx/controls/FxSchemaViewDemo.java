@@ -7,13 +7,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.dau.runtime.Block;
 import org.dau.ui.schematic.fx.model.FxBlock;
 import org.dau.ui.schematic.fx.model.FxSchema;
 import org.dau.ui.schematic.fx.theme.ThemeApplier;
-import org.dau.ui.schematic.layout.model.InputInfo;
-import org.dau.ui.schematic.layout.model.OutputInfo;
 
-import java.util.List;
 import java.util.Random;
 
 public class FxSchemaViewDemo {
@@ -26,30 +24,22 @@ public class FxSchemaViewDemo {
 
     @Override
     public void start(Stage primaryStage) {
-      var schema = new FxSchema("mySchema");
+      var schema = new FxSchema();
       var random = new Random(10000L);
       for (int i = 0; i < 5; i++) {
         var block = new FxBlock(
           schema,
-          "block " + i,
-          List.of(
-            new InputInfo("clock"),
-            new InputInfo("sync"),
-            new InputInfo("x"),
-            new InputInfo("y"),
-            new InputInfo("z")
-          ),
-          List.of(
-            new OutputInfo("distance"),
-            new OutputInfo("delta"),
-            new OutputInfo("out")
-          )
+          TestClass.class.getConstructors()[0]
         );
-        block.xProperty().set(random.nextDouble(600d));
-        block.yProperty().set(random.nextDouble(500d));
+        block.x.set(random.nextDouble(600d));
+        block.y.set(random.nextDouble(500d));
+        schema.addBlock(block);
       }
       var schemaView = new FxSchemaView(schema);
-      var scrollPane = new ScrollPane(new Group(schemaView));
+      var group = new Group(schemaView);
+      group.setFocusTraversable(false);
+      var scrollPane = new ScrollPane(group);
+      scrollPane.setFocusTraversable(false);
       var scene = new Scene(scrollPane, 800, 600);
       scene.setFill(Color.BLACK);
       primaryStage.setScene(scene);
@@ -59,5 +49,24 @@ public class FxSchemaViewDemo {
 
   public static void main(String... args) {
     Application.launch(App.class, args);
+  }
+
+  @Block("Test block")
+  public static final class TestClass {
+
+    public TestClass(String sync, String name, int code, double len, double angle, double speed) {
+    }
+
+    public double distance() {
+      return 0d;
+    }
+
+    public double out() {
+      return 0d;
+    }
+
+    public double delta() {
+      return 0;
+    }
   }
 }

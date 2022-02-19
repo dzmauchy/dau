@@ -8,8 +8,7 @@ val javafxLibs = listOf(
   "javafx-base",
   "javafx-controls",
   "javafx-media",
-  "javafx-graphics",
-  "javafx-web"
+  "javafx-graphics"
 )
 
 val os = DefaultNativePlatform.getCurrentOperatingSystem()!!
@@ -32,3 +31,36 @@ val javafxClassifier = when {
 val javaVersion = JavaVersion.VERSION_17
 
 val springVersion = "5.3.15"
+val ikonliVersion = "12.3.0"
+
+val ikonliLibs = listOf(
+  "materialdesign",
+  "material",
+  "fontawesome5",
+  "weathericons",
+  "themify",
+  "lineawesome",
+  "linecons",
+  "metrizeicons",
+  "simpleicons",
+  "maki",
+  "boxicons",
+  "microns",
+  "ionicons4",
+  "bpmn",
+  "elusive",
+  "remixicon",
+  "fluentui",
+  "octicons",
+  "zondicons",
+  "dashicons",
+  "prestashopicons",
+  "foundation",
+  "fileicons",
+  "entypo",
+  "hawcons",
+  "medicons",
+  "icomoon",
+  "bootstrapicons",
+  "material2"
+)

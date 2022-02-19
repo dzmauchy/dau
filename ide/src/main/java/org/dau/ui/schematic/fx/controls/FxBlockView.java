@@ -4,19 +4,25 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.dau.ui.icons.IconFactory;
 import org.dau.ui.schematic.fx.model.FxBlock;
 import org.dau.ui.utils.Draggables;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.ionicons4.Ionicons4Material;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2AL;
+import org.kordamp.ikonli.material2.Material2MZ;
 
 import static javafx.beans.binding.Bindings.createDoubleBinding;
 import static javafx.geometry.Insets.EMPTY;
@@ -50,7 +56,7 @@ public final class FxBlockView extends BorderPane {
     this.block = block;
     setBorder(BORDER);
     setBackground(BACKGROUND);
-    center.setText(block.getId());
+    center.setText(block.getVar());
     setCenter(center);
     setLeft(left);
     setRight(right);
@@ -73,36 +79,38 @@ public final class FxBlockView extends BorderPane {
       ev.consume();
     });
     top.setAlignment(Pos.CENTER_LEFT);
-    top.setBackground(new Background(new BackgroundFill(Color.DARKBLUE, null, null)));
+    top.setStyle("-fx-background-color: derive(-fx-focus-color, -30%)");
     top.setPadding(TITLE_INSETS);
-    top.setSpacing(3d);
+    top.setSpacing(5d);
     top.getChildren().addAll(
-      button("icons/menu16.png", this::onMenu),
-      button("icons/info16.png", this::onInfo),
+      button(Material2MZ.MENU, this::onMenu),
+      button(Ionicons4Material.INFORMATION_CIRCLE, this::onInfo),
       title(),
-      button("icons/close16.png", this::onClose)
+      new Separator(Orientation.VERTICAL),
+      button(Material2AL.CLOSE, this::onClose)
     );
 
-    relocate(block.getX(), block.getY());
-    block.xProperty().bind(layoutXProperty());
-    block.yProperty().bind(layoutYProperty());
-    block.wProperty().bind(widthProperty());
-    block.hProperty().bind(heightProperty());
+    relocate(block.x.get(), block.y.get());
+    block.x.bind(layoutXProperty());
+    block.y.bind(layoutYProperty());
+    block.w.bind(widthProperty());
+    block.h.bind(heightProperty());
 
     Draggables.enableDrag(top, this);
   }
 
   private Label title() {
-    var title = new Label(block.getId());
-    title.setAlignment(Pos.CENTER);
+    var title = new Label();
+    title.textProperty().bind(block.name);
+    title.setAlignment(Pos.BASELINE_CENTER);
     title.setMaxWidth(Double.MAX_VALUE);
     title.setMouseTransparent(true);
     HBox.setHgrow(title, Priority.ALWAYS);
     return title;
   }
 
-  private ImageView button(String icon, EventHandler<MouseEvent> action) {
-    var button = IconFactory.icon(icon);
+  private FontIcon button(Ikon ikon, EventHandler<MouseEvent> action) {
+    var button = IconFactory.icon(ikon, 20);
     button.setOnMouseEntered(ev -> {
       var effect = button.getEffect();
       if (effect == null) {
@@ -164,16 +172,13 @@ public final class FxBlockView extends BorderPane {
   private final class In extends Button {
 
     private final FxBlock.Input input;
-    private final DoubleBinding connPointBinding = createDoubleBinding(() -> getBoundsInParent().getCenterY(), boundsInParentProperty());
     private final DoubleBinding inputYBinding = createDoubleBinding(
-      () -> FxBlockView.this.getBoundsInParent().getMinY() + left.getBoundsInParent().getMinY() + connPointBinding.get(),
-      connPointBinding, FxBlockView.this.boundsInParentProperty()
+      this::inputY, boundsInParentProperty(), FxBlockView.this.boundsInParentProperty()
     );
 
     private In(FxBlock.Input input) {
       super(input.getId());
       this.input = input;
-      input.connectionPointProperty().bind(connPointBinding);
       setFocusTraversable(false);
       setOnAction(this::onClick);
     }
@@ -183,25 +188,29 @@ public final class FxBlockView extends BorderPane {
       var data = (ConnectionData) p.getUserData();
       if (data != null && data.currentOut != null) {
         data.currentOut.setSelected(false);
-        block.getSchema().addConnection(data.currentOut.output, input);
+        block.schema.addConnection(data.currentOut.output, input);
         data.currentOut = null;
       }
+    }
+
+    private double inputY() {
+      var py = FxBlockView.this.getBoundsInParent().getMinY();
+      var ly = left.getBoundsInParent().getMinY();
+      var cy = getBoundsInParent().getCenterY();
+      return py + ly + cy;
     }
   }
 
   private final class Out extends ToggleButton {
 
     private final FxBlock.Output output;
-    private final DoubleBinding connPointBinding = createDoubleBinding(() -> getBoundsInParent().getCenterY(), boundsInParentProperty());
     private final DoubleBinding inputYBinding = createDoubleBinding(
-      () -> FxBlockView.this.getBoundsInParent().getMinY() + right.getBoundsInParent().getMinY() + connPointBinding.get(),
-      connPointBinding, FxBlockView.this.boundsInParentProperty()
+      this::inputY, boundsInParentProperty(), FxBlockView.this.boundsInParentProperty()
     );
 
     private Out(FxBlock.Output output) {
       super(output.getId());
       this.output = output;
-      output.connectionPointProperty().bind(connPointBinding);
       setFocusTraversable(false);
       setOnAction(this::onClick);
     }
@@ -219,6 +228,13 @@ public final class FxBlockView extends BorderPane {
         }
         data.currentOut = this;
       }
+    }
+
+    private double inputY() {
+      var py = FxBlockView.this.getBoundsInParent().getMinY();
+      var ry = right.getBoundsInParent().getMinY();
+      var cy = getBoundsInParent().getCenterY();
+      return py + ry + cy;
     }
   }
 
