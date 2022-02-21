@@ -1,11 +1,9 @@
 package org.dau.ide.action;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ObservableStringValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.WeakListChangeListener;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -19,12 +17,12 @@ import org.springframework.lang.NonNull;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.IdentityHashMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
 import static javafx.beans.binding.Bindings.createObjectBinding;
@@ -112,7 +110,7 @@ public final class FxActions {
   }
 
   private static void fillMenuItems(ObservableList<MenuItem> menuItems, ObservableList<FxAction> actions) {
-    var map = new HashMap<FxAction, MenuItem>(actions.size());
+    var map = new IdentityHashMap<FxAction, MenuItem>(actions.size());
     for (var a : actions) {
       var menuItem = menuItem(a);
       map.put(a, menuItem);
@@ -133,11 +131,17 @@ public final class FxActions {
             .toList();
           menuItems.addAll(c.getFrom(), newItems);
         }
+        if (c.wasPermutated()) {
+          var items = IntStream.range(c.getFrom(), c.getTo())
+            .map(c::getPermutation)
+            .mapToObj(menuItems::get)
+            .toList();
+          menuItems.remove(c.getFrom(), c.getTo());
+          menuItems.addAll(c.getFrom(), items);
+        }
       }
     };
-    // we need to capture lh here
-    menuItems.addListener((InvalidationListener) o -> Objects.hashCode(lh));
-    actions.addListener(new WeakListChangeListener<>(lh));
+    actions.addListener(lh);
   }
 
   public static MenuItem menuItem(FxAction action) {
@@ -149,7 +153,7 @@ public final class FxActions {
         menuItem = new MenuItem();
       } else {
         var checkMenuItem = new CheckMenuItem();
-        checkMenuItem.selectedProperty().bind(selected);
+        checkMenuItem.selectedProperty().bindBidirectional(selected);
         menuItem = checkMenuItem;
       }
     } else {

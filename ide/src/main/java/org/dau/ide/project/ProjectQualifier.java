@@ -1,4 +1,4 @@
-package org.dau.ide.action;
+package org.dau.ide.project;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -7,10 +7,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Qualifier
-@Target({ElementType.METHOD})
+@Qualifier("projectUI")
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ActionGroup {
-  String name();
-  int priority() default 0;
+public @interface ProjectQualifier {
 }

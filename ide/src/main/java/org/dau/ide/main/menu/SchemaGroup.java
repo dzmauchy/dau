@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@MenuBarGroup(name = "Schema", priority = 1)
+@MenuBarGroup(name = "Schema", priority = 2)
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SchemaGroup {

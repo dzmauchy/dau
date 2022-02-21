@@ -47,6 +47,7 @@ public final class FxSchemaView extends StackPane {
     connectionLayer.setFocusTraversable(false);
     getChildren().addAll(connectionLayer, blockLayer);
     schema.getBlocks().forEach(this::addBlock);
+    schema.getConnections().forEach(this::addConnection);
     schema.addBlockListener(new WeakSetChangeListener<>(onBlockChange));
     schema.addConnectionListener(new WeakSetChangeListener<>(onConnectionChange));
   }
@@ -80,8 +81,7 @@ public final class FxSchemaView extends StackPane {
       });
     }
     if (c.wasAdded()) {
-      var conn = c.getElementAdded();
-      connectionLayer.getChildren().add(new Conn(conn));
+      addConnection(c.getElementAdded());
     }
   }
 
@@ -89,6 +89,11 @@ public final class FxSchemaView extends StackPane {
     var view = new FxBlockView(block);
     blockLayer.getChildren().add(view);
     blockViewMap.put(block.id, view);
+  }
+
+  private void addConnection(FxBlockConnection connection) {
+    var conn = new Conn(connection);
+    connectionLayer.getChildren().add(conn);
   }
 
   private final class Conn extends Group {
@@ -157,7 +162,7 @@ public final class FxSchemaView extends StackPane {
     private void calculateStroke() {
       try {
         var md = MessageDigest.getInstance("MD5");
-        md.update(connection.out().getId().getBytes(UTF_8));
+        md.update(connection.out().id.getBytes(UTF_8));
         md.update(ByteBuffer.allocate(4).putInt(0, connection.out().getBlock().id).array());
         var bytes = md.digest();
         int r1 = toUnsignedInt(bytes[0]), r2 = toUnsignedInt(bytes[1]), r3 = toUnsignedInt(bytes[2]);

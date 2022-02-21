@@ -33,6 +33,7 @@ subprojects {
   }
 
   dependencies {
+    "implementation"(group = "org.slf4j", name = "slf4j-jdk14", version = slf4jVersion)
     "testImplementation"(group = "org.junit.jupiter", name = "junit-jupiter-api", version = junitVersion)
     "testRuntimeOnly"(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = junitVersion)
   }

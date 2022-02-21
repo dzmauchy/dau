@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public final class MainPane extends BorderPane {
 
-  public MainPane(MainTabPane tabPane, MainMenuBar menuBar) {
+  public MainPane(MainProjectTabs tabPane, MainMenuBar menuBar) {
     super(tabPane, menuBar, null, null, null);
   }
 

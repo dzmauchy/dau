@@ -9,7 +9,6 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.NonNull;
 
 import java.util.Base64;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -23,7 +22,6 @@ public final class Ctx extends AnnotationConfigApplicationContext {
   private static final Base64.Encoder ENCODER = Base64.getUrlEncoder().withoutPadding();
 
   private final ConcurrentHashMap<String, Ctx> children = new ConcurrentHashMap<>(16, 0.5f);
-  private final LinkedList<Object> roots = new LinkedList<>();
 
   public Ctx(Ctx parent, String name) {
     super.setId(ENCODER.encodeToString(allocate(4).putInt(0, identityHashCode(this)).array()));
@@ -122,10 +120,6 @@ public final class Ctx extends AnnotationConfigApplicationContext {
     } else {
       return e.getPath() + "/" + getId();
     }
-  }
-
-  public void addRoot(Object root) {
-    roots.add(root);
   }
 
   @Override

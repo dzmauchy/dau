@@ -4,7 +4,7 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
   java
-  id("org.springframework.boot").version("2.6.3")
+  id("org.springframework.boot").version(springBootVersion)
 }
 
 tasks.getByName("jar", Jar::class) {
@@ -36,7 +36,6 @@ tasks.register<Exec>("standaloneRun") {
 
 dependencies {
   implementation(group = "org.eclipse.jdt", name = "org.eclipse.jdt.core", version = "3.28.0")
-  implementation(group = "org.slf4j", name = "slf4j-jdk14", version = "1.7.36")
 
   implementation(group = "org.kordamp.ikonli", name = "ikonli-javafx", version = ikonliVersion)
   for (lib in ikonliLibs) {

@@ -1,11 +1,14 @@
 package org.dau.ui.schematic.fx.controls;
 
 import javafx.beans.binding.DoubleBinding;
+import javafx.collections.ListChangeListener;
+import javafx.collections.WeakListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -17,12 +20,17 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.dau.ui.icons.IconFactory;
 import org.dau.ui.schematic.fx.model.FxBlock;
+import org.dau.ui.schematic.fx.model.FxBlock.Input;
+import org.dau.ui.schematic.fx.model.FxBlock.Output;
 import org.dau.ui.utils.Draggables;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.ionicons4.Ionicons4Material;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2AL;
 import org.kordamp.ikonli.material2.Material2MZ;
+
+import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import static javafx.beans.binding.Bindings.createDoubleBinding;
 import static javafx.geometry.Insets.EMPTY;
@@ -52,6 +60,9 @@ public final class FxBlockView extends BorderPane {
   private final DoubleBinding outputX = createDoubleBinding(() -> getBoundsInParent().getMaxX(), boundsInParentProperty());
   private final DoubleBinding inputX = createDoubleBinding(() -> getBoundsInParent().getMinX(), boundsInParentProperty());
 
+  private final ListChangeListener<Input> inputListener = changeHandler(left, In::new);
+  private final ListChangeListener<Output> outputListener = changeHandler(right, Out::new);
+
   public FxBlockView(FxBlock block) {
     this.block = block;
     setBorder(BORDER);
@@ -66,14 +77,10 @@ public final class FxBlockView extends BorderPane {
     right.setAlignment(Pos.TOP_RIGHT);
     setMargin(center, CENTER_INSETS);
     setMargin(top, TOP_INSETS);
-    block.getInputs().forEach(i -> {
-      var in = new In(i);
-      left.getChildren().add(in);
-    });
-    block.getOutputs().forEach(o -> {
-      var out = new Out(o);
-      right.getChildren().add(out);
-    });
+    block.inputs.addListener(new WeakListChangeListener<>(inputListener));
+    block.outputs.addListener(new WeakListChangeListener<>(outputListener));
+    left.getChildren().setAll(block.inputs.stream().map(In::new).toList());
+    right.getChildren().setAll(block.outputs.stream().map(Out::new).toList());
     top.setOnMouseClicked(ev -> {
       toFront();
       ev.consume();
@@ -143,11 +150,11 @@ public final class FxBlockView extends BorderPane {
 
   }
 
-  public DoubleBinding getOutputX(FxBlock.Output output) {
+  public DoubleBinding getOutputX(Output output) {
     return outputX;
   }
 
-  public DoubleBinding getOutputY(FxBlock.Output output) {
+  public DoubleBinding getOutputY(Output output) {
     for (var c : right.getChildren()) {
       if (c instanceof Out o && o.output == output) {
         return o.inputYBinding;
@@ -156,11 +163,11 @@ public final class FxBlockView extends BorderPane {
     throw new IllegalStateException("No output found");
   }
 
-  public DoubleBinding getInputX(FxBlock.Input input) {
+  public DoubleBinding getInputX(Input input) {
     return inputX;
   }
 
-  public DoubleBinding getInputY(FxBlock.Input input) {
+  public DoubleBinding getInputY(Input input) {
     for (var c : left.getChildren()) {
       if (c instanceof In i && i.input == input) {
         return i.inputYBinding;
@@ -169,15 +176,36 @@ public final class FxBlockView extends BorderPane {
     throw new IllegalStateException("No input found");
   }
 
+  private static <T> ListChangeListener<T> changeHandler(VBox box, Function<T, Node> f) {
+    return c -> {
+      while (c.next()) {
+        if (c.wasRemoved()) {
+          box.getChildren().remove(c.getFrom(), c.getTo());
+        }
+        if (c.wasAdded()) {
+          box.getChildren().addAll(c.getFrom(), c.getAddedSubList().stream().map(f).toList());
+        }
+        if (c.wasPermutated()) {
+          var nodes = IntStream.range(c.getFrom(), c.getTo())
+            .map(c::getPermutation)
+            .mapToObj(box.getChildren()::get)
+            .toList();
+          box.getChildren().remove(c.getFrom(), c.getTo());
+          box.getChildren().addAll(c.getFrom(), nodes);
+        }
+      }
+    };
+  }
+
   private final class In extends Button {
 
-    private final FxBlock.Input input;
+    private final Input input;
     private final DoubleBinding inputYBinding = createDoubleBinding(
       this::inputY, boundsInParentProperty(), FxBlockView.this.boundsInParentProperty()
     );
 
-    private In(FxBlock.Input input) {
-      super(input.getId());
+    private In(Input input) {
+      super(input.id);
       this.input = input;
       setFocusTraversable(false);
       setOnAction(this::onClick);
@@ -203,13 +231,13 @@ public final class FxBlockView extends BorderPane {
 
   private final class Out extends ToggleButton {
 
-    private final FxBlock.Output output;
+    private final Output output;
     private final DoubleBinding inputYBinding = createDoubleBinding(
       this::inputY, boundsInParentProperty(), FxBlockView.this.boundsInParentProperty()
     );
 
-    private Out(FxBlock.Output output) {
-      super(output.getId());
+    private Out(Output output) {
+      super(output.id);
       this.output = output;
       setFocusTraversable(false);
       setOnAction(this::onClick);

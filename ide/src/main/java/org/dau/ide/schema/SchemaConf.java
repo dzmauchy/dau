@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 public class SchemaConf {
 
-  private final FxSchema schema;
+  public final FxSchema schema;
 
   public SchemaConf(@Autowired(required = false) FxSchema schema) {
     this.schema = schema;

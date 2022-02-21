@@ -13,6 +13,11 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCombination;
 import org.dau.ide.l10n.Localization;
 
+import java.util.function.Consumer;
+
+import static javafx.collections.FXCollections.emptyObservableList;
+import static javafx.collections.FXCollections.unmodifiableObservableList;
+
 public final class FxAction {
 
   final SimpleStringProperty text = new SimpleStringProperty();
@@ -21,6 +26,8 @@ public final class FxAction {
   final SimpleObjectProperty<KeyCombination> key = new SimpleObjectProperty<>();
   final SimpleObjectProperty<EventHandler<ActionEvent>> handler = new SimpleObjectProperty<>();
   final SimpleBooleanProperty disabled = new SimpleBooleanProperty();
+
+  public Object linkedObject;
 
   BooleanProperty selected;
   ObservableList<FxAction> subItems;
@@ -113,5 +120,20 @@ public final class FxAction {
   public FxAction disabled(ObservableBooleanValue disabled) {
     this.disabled.bind(disabled);
     return this;
+  }
+
+  public FxAction linkedObject(Object linkedObject) {
+    this.linkedObject = linkedObject;
+    return this;
+  }
+
+  public void withSelected(Consumer<BooleanProperty> consumer) {
+    if (selected != null) {
+      consumer.accept(selected);
+    }
+  }
+
+  public ObservableList<FxAction> getSubItems() {
+    return subItems == null ? emptyObservableList() : unmodifiableObservableList(subItems);
   }
 }
