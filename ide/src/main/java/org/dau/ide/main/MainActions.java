@@ -9,10 +9,12 @@ import javafx.stage.Stage;
 import org.dau.ide.action.ActionGroup;
 import org.dau.ide.action.FxAction;
 import org.dau.ide.l10n.Localization;
+import org.dau.ide.main.dialogs.ProjectsDialog;
 import org.dau.ide.main.menu.ProjectGroup;
 import org.dau.ide.main.menu.ViewGroup;
 import org.dau.ide.project.ProjectTab;
 import org.dau.ui.schematic.fx.model.FxProject;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -36,9 +38,17 @@ public class MainActions {
 
   @MainBean
   @ProjectGroup
-  @ActionGroup(name = "project")
-  public FxAction loadProject(MainDirectories directories, @MainQualifier Stage stage, MainProjects projects) {
+  @ActionGroup(name = "project-load")
+  public FxAction loadProject(ObjectFactory<ProjectsDialog> dialog, MainProjects projects) {
     return new FxAction("icons/load.png", "Load a project")
+      .on(() -> dialog.getObject().showAndWait().ifPresent(path -> projects.projects.add(FxProject.load(path))));
+  }
+
+  @MainBean
+  @ProjectGroup
+  @ActionGroup(name = "project-load")
+  public FxAction importProject(MainDirectories directories, @MainQualifier Stage stage, MainProjects projects) {
+    return new FxAction("icons/import.png", "Import a project")
       .on(() -> {
         var directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(directories.homeDir.toFile());
