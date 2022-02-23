@@ -69,7 +69,7 @@ public final class FxProject {
       var db = dbf.newDocumentBuilder();
       var doc = db.newDocument();
       var root = doc.createElement("project");
-      doc.appendChild(doc);
+      doc.appendChild(root);
 
       root.setAttribute("name", name.get());
 
