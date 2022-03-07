@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.dau.runtime.Block;
+import org.dau.util.Xmls;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -64,13 +65,12 @@ public final class FxBlock {
   }
 
   private void collectOutputs(Type type, ArrayList<Output> outputs) {
+    if (type != void.class) {
+      outputs.add(new Output("@"));
+    }
     if (type instanceof ParameterizedType t) {
-      outputs.add(new Output("*"));
       collectOutputs(t.getRawType(), outputs);
     } else if (type instanceof Class<?> c) {
-      if (c != void.class) {
-        outputs.add(new Output("*"));
-      }
       for (var m : c.getMethods()) {
         if (m.getParameterCount() > 2) {
           continue;
@@ -168,6 +168,19 @@ public final class FxBlock {
     } catch (IllegalAccessException e) {
       throw new IllegalStateException(e);
     }
+    var inputsEl = doc.createElement("inputs");
+    inputs.forEach(input -> {
+      var c = input.constant.get();
+      if (c != null) {
+        var e = doc.createElement("input");
+        e.setAttribute("id", input.id);
+        e.setTextContent(c);
+        inputsEl.appendChild(e);
+      }
+    });
+    if (inputsEl.hasChildNodes()) {
+      el.appendChild(inputsEl);
+    }
     return el;
   }
 
@@ -193,6 +206,13 @@ public final class FxBlock {
     block.y.set(Double.parseDouble(element.getAttribute("y")));
     block.w.set(Double.parseDouble(element.getAttribute("w")));
     block.h.set(Double.parseDouble(element.getAttribute("h")));
+    Xmls.elementsByTag(element, "inputs", "input").forEach(e -> {
+      var inputId = e.getAttribute("id");
+      var input = block.getInput(inputId);
+      if (input != null) {
+        input.constant.set(e.getTextContent());
+      }
+    });
     return block;
   }
 
@@ -214,6 +234,7 @@ public final class FxBlock {
   public final class Input {
 
     public final String id;
+    public final SimpleStringProperty constant = new SimpleStringProperty(this, "constant");
 
     public Input(String id) {
       this.id = id;

@@ -31,15 +31,17 @@ public final class FxProject {
   private static final AtomicInteger COUNTER = new AtomicInteger();
 
   public final String id;
-  public final SimpleStringProperty name = new SimpleStringProperty(this, "name", "Project " + COUNTER.incrementAndGet());
+  public final SimpleStringProperty name = new SimpleStringProperty(this, "name");
   public final ObservableSet<FxSchema> schemas = FXCollections.observableSet();
 
   private FxProject(String id) {
-    this.id = id == null ? Encoders.generateId(this) : id;
+    this.id = id;
+    this.name.set(id);
   }
 
   public FxProject() {
-    this(null);
+    this.id = Encoders.generateId(this);
+    this.name.set("Project " + COUNTER.incrementAndGet());
   }
 
   public static FxProject load(Path directory) {

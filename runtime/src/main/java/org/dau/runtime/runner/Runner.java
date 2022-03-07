@@ -3,6 +3,9 @@ package org.dau.runtime.runner;
 import java.net.URL;
 import java.util.jar.JarInputStream;
 
+import static java.lang.Runtime.getRuntime;
+import static java.lang.Thread.currentThread;
+
 public final class Runner {
 
   private Runner() {}
@@ -13,8 +16,8 @@ public final class Runner {
     }
     var url = new URL(args[0]);
     var deployment = deployment(url);
-    var classLoader = Thread.currentThread().getContextClassLoader();
-    deployment.run(url, classLoader, Runner::onClose);
+    var classLoader = currentThread().getContextClassLoader();
+    deployment.run(url, classLoader, d -> getRuntime().addShutdownHook(new Thread(d)));
   }
 
   public static Deployment deployment(URL url) throws Exception {
@@ -26,9 +29,5 @@ public final class Runner {
       }
     }
     throw new IllegalStateException("No deployment descriptor found");
-  }
-
-  private static void onClose(Runnable runnable) {
-    Runtime.getRuntime().addShutdownHook(new Thread(runnable));
   }
 }

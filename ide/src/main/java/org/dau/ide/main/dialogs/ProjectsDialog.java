@@ -1,9 +1,10 @@
 package org.dau.ide.main.dialogs;
 
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -20,9 +21,8 @@ import java.nio.file.Path;
 import static org.dau.ide.l10n.Localization.binding;
 
 @PrototypeComponent
-public class ProjectsDialog extends Dialog<Path> {
+public class ProjectsDialog extends Dialog<ObservableList<Path>> {
 
-  private final SimpleObjectProperty<Path> path = new SimpleObjectProperty<>(this, "path");
   private final TableView<Path> table = new TableView<>();
 
   public ProjectsDialog(@MainQualifier Stage stage, MainDirectories directories) throws Exception {
@@ -34,7 +34,7 @@ public class ProjectsDialog extends Dialog<Path> {
     getDialogPane().setContent(table);
     titleProperty().bind(binding("Projects"));
     setResultConverter(param -> switch (param.getButtonData()) {
-      case APPLY -> path.get();
+      case APPLY -> table.getSelectionModel().getSelectedItems();
       case CANCEL_CLOSE -> null;
       default -> throw new IllegalStateException();
     });
@@ -42,6 +42,7 @@ public class ProjectsDialog extends Dialog<Path> {
   }
 
   public void initTable(MainDirectories directories) throws Exception {
+    table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     table.getColumns().add(
       new TableColumnBuilder<Path, String>("Id")
         .value(f -> new SimpleStringProperty(f.getValue().getFileName().toString()))
@@ -61,6 +62,5 @@ public class ProjectsDialog extends Dialog<Path> {
         }
       }
     }
-    path.bind(table.getSelectionModel().selectedItemProperty());
   }
 }

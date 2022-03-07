@@ -2,8 +2,10 @@ package org.dau.ide.main;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.SetChangeListener;
+import javafx.scene.control.Tab;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.dau.ide.action.ActionGroup;
@@ -16,6 +18,8 @@ import org.dau.ide.project.ProjectTab;
 import org.dau.ui.schematic.fx.model.FxProject;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Component;
+
+import static javafx.beans.binding.Bindings.createBooleanBinding;
 
 @Component
 public class MainActions {
@@ -39,9 +43,16 @@ public class MainActions {
   @MainBean
   @ProjectGroup
   @ActionGroup(name = "project-load")
-  public FxAction loadProject(ObjectFactory<ProjectsDialog> dialog, MainProjects projects) {
+  public FxAction loadProject(ObjectFactory<ProjectsDialog> dialog, MainProjects projects, MainProjectTabs tabs) {
     return new FxAction("icons/load.png", "Load a project")
-      .on(() -> dialog.getObject().showAndWait().ifPresent(path -> projects.projects.add(FxProject.load(path))));
+      .on(() -> dialog.getObject().showAndWait().ifPresent(paths -> {
+        for (var path : paths) {
+          projects.projects.add(FxProject.load(path));
+        }
+        if (!paths.isEmpty()) {
+          tabs.getSelectionModel().selectLast();
+        }
+      }));
   }
 
   @MainBean
@@ -63,8 +74,20 @@ public class MainActions {
   @MainBean
   @ProjectGroup
   @ActionGroup(name = "projects")
-  public FxAction projectListAction(MainProjects projects, MainProjectTabs projectsPane) {
+  public FxAction projectListAction(MainProjects projects, MainProjectTabs tabs) {
     var list = FXCollections.<FxAction>observableArrayList();
+    var tabSelectListener = (ChangeListener<Tab>) (o, ov, nv) -> {
+      if (nv instanceof ProjectTab t) {
+        for (var a : list) {
+          if (a.linkedObject == t.project) {
+            a.withSelected(p -> p.set(true));
+          } else {
+            a.withSelected(p -> p.set(false));
+          }
+        }
+      }
+    };
+    tabs.getSelectionModel().selectedItemProperty().addListener(tabSelectListener);
     projects.projects.addListener((SetChangeListener<FxProject>) c -> {
       if (c.wasRemoved()) {
         list.removeIf(a -> a.linkedObject == c.getElementRemoved());
@@ -74,9 +97,11 @@ public class MainActions {
         var sel = new SimpleBooleanProperty();
         sel.addListener((o, ov, nv) -> {
           if (nv) {
-            projectsPane.getTabs().forEach(tab -> {
+            tabs.getTabs().forEach(tab -> {
               if (tab instanceof ProjectTab t && t.project == p) {
-                projectsPane.getSelectionModel().select(tab);
+                tabs.getSelectionModel().selectedItemProperty().removeListener(tabSelectListener);
+                tabs.getSelectionModel().select(tab);
+                tabs.getSelectionModel().selectedItemProperty().addListener(tabSelectListener);
               }
             });
           }
@@ -95,5 +120,19 @@ public class MainActions {
       }
     });
     return new FxAction("icons/projects.png", "Projects").subItems(list);
+  }
+
+  @MainBean
+  @ProjectGroup
+  @ActionGroup(name = "settings")
+  public FxAction projectSettingAction(MainProjectTabs tabs) {
+    return new FxAction("icons/settings.png", "Settings")
+      .on(() -> {
+
+      })
+      .disabled(createBooleanBinding(
+        () -> tabs.getSelectionModel().getSelectedItem() instanceof ProjectTab,
+        tabs.getSelectionModel().selectedItemProperty())
+      );
   }
 }

@@ -11,18 +11,12 @@ import static java.lang.invoke.MethodType.methodType;
 
 public record Deployment(String name, List<DeploymentUnit> units, List<Repository> repos, List<Library> libraries) {
 
-  public void run(URL code, ClassLoader parent, Consumer<Runnable> beforeRun) {
+  public void run(URL code, ClassLoader parent, Consumer<DeploymentDestroyer> beforeRun) {
     if (units.isEmpty()) {
       return;
     }
     var classLoader = classLoader(parent, code);
-    beforeRun.accept(() -> {
-      try {
-        classLoader.close();
-      } catch (Throwable e) {
-        throw new IllegalStateException(e);
-      }
-    });
+    beforeRun.accept(classLoader::close);
     var lookup = MethodHandles.lookup();
     var context = new RuntimeContext();
     for (var unit : units) {

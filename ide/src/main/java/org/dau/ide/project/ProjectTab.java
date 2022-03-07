@@ -14,12 +14,14 @@ import org.springframework.stereotype.Component;
 public class ProjectTab extends Tab {
 
   public final FxProject project;
+  public final Ctx ctx;
 
-  public ProjectTab(FxProject project, SchemaTabs tabPane, Ctx ctx) {
+  public ProjectTab(FxProject project, ProjectPane projectPane, Ctx ctx) {
     this.project = project;
+    this.ctx = ctx;
     setGraphic(IconFactory.icon("icons/project.png", 20));
     textProperty().bind(project.name);
-    setContent(tabPane);
+    setContent(projectPane);
     setOnCloseRequest(ev -> ctx.close());
   }
 
