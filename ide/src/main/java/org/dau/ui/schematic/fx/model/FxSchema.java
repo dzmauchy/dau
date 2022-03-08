@@ -54,7 +54,9 @@ public final class FxSchema {
         connections.removeIf(co -> co.in().getBlock() == block || co.out().getBlock() == block);
       }
       if (c.wasAdded()) {
-        blockMap.put(c.getElementAdded().id, c.getElementAdded());
+        var block = c.getElementAdded();
+        ids.set(block.id);
+        blockMap.put(block.id, block);
       }
     });
     connections.addListener((Change<? extends FxBlockConnection> c) -> {
@@ -110,9 +112,7 @@ public final class FxSchema {
   }
 
   int blockId() {
-    int n = ids.nextClearBit(0);
-    ids.set(n);
-    return n;
+    return ids.nextClearBit(0);
   }
 
   public boolean removeBlock(int id) {

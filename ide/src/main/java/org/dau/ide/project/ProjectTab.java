@@ -16,12 +16,12 @@ public class ProjectTab extends Tab {
   public final FxProject project;
   public final Ctx ctx;
 
-  public ProjectTab(FxProject project, ProjectPane projectPane, Ctx ctx) {
+  public ProjectTab(FxProject project, SchemaTabs tabs, Ctx ctx) {
     this.project = project;
     this.ctx = ctx;
     setGraphic(IconFactory.icon("icons/project.png", 20));
     textProperty().bind(project.name);
-    setContent(projectPane);
+    setContent(tabs);
     setOnCloseRequest(ev -> ctx.close());
   }
 
