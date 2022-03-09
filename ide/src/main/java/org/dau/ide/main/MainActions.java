@@ -121,18 +121,4 @@ public class MainActions {
     });
     return new FxAction("icons/projects.png", "Projects").subItems(list);
   }
-
-  @MainBean
-  @ProjectGroup
-  @ActionGroup(name = "settings")
-  public FxAction projectSettingAction(MainProjectTabs tabs) {
-    return new FxAction("icons/settings.png", "Settings")
-      .on(() -> {
-
-      })
-      .disabled(createBooleanBinding(
-        () -> tabs.getSelectionModel().getSelectedItem() instanceof ProjectTab,
-        tabs.getSelectionModel().selectedItemProperty())
-      );
-  }
 }

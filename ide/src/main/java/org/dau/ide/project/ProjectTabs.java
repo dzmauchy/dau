@@ -15,7 +15,11 @@ import org.springframework.stereotype.Component;
 import static javafx.application.Platform.runLater;
 
 @Component
-public class SchemaTabs extends TabPane {
+public class ProjectTabs extends TabPane {
+
+  public ProjectTabs(ProjectManagementTab settingsTab) {
+    super(settingsTab);
+  }
 
   @Autowired
   public void initSchemas(Ctx ctx, FxProject project) {

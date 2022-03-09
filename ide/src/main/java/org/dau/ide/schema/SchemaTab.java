@@ -2,7 +2,7 @@ package org.dau.ide.schema;
 
 import javafx.scene.control.Tab;
 import org.dau.di.Ctx;
-import org.dau.ide.project.SchemaTabs;
+import org.dau.ide.project.ProjectTabs;
 import org.dau.ui.icons.IconFactory;
 import org.dau.ui.schematic.fx.model.FxSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class SchemaTab extends Tab {
   }
 
   @Autowired
-  public void initWith(SchemaTabs tabPane) {
+  public void initWith(ProjectTabs tabPane) {
     tabPane.getTabs().add(this);
     ctx.addApplicationListener((ContextClosedEvent ev) -> tabPane.getTabs().remove(this));
   }

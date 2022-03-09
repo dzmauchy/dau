@@ -16,7 +16,7 @@ public class ProjectTab extends Tab {
   public final FxProject project;
   public final Ctx ctx;
 
-  public ProjectTab(FxProject project, SchemaTabs tabs, Ctx ctx) {
+  public ProjectTab(FxProject project, ProjectTabs tabs, Ctx ctx) {
     this.project = project;
     this.ctx = ctx;
     setGraphic(IconFactory.icon("icons/project.png", 20));
