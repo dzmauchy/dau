@@ -10,5 +10,6 @@ public class ProjectManagementPane extends Accordion {
 
   public ProjectManagementPane(@Qualifier("management") TitledPane[] panes) {
     super(panes);
+    setExpandedPane(panes[0]);
   }
 }

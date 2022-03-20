@@ -1,5 +1,7 @@
 package org.dau.ui.schematic.fx.model;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
@@ -284,6 +286,10 @@ public final class FxSchema {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  public IntegerBinding blockCount() {
+    return Bindings.size(blocks);
   }
 
   @Override
