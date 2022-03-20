@@ -19,8 +19,6 @@ import org.dau.ui.schematic.fx.model.FxProject;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Component;
 
-import static javafx.beans.binding.Bindings.createBooleanBinding;
-
 @Component
 public class MainActions {
 

@@ -31,7 +31,7 @@ val javafxClassifier = when {
 val javaVersion = JavaVersion.VERSION_17
 
 val springBootVersion = "2.6.4"
-val springVersion = "5.3.16"
+val springVersion = "5.3.17"
 val ikonliVersion = "12.3.0"
 val log4jVersion = "2.17.1"
 val slf4jVersion = "1.7.36"

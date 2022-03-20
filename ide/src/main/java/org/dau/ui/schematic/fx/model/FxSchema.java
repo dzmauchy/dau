@@ -36,8 +36,8 @@ public final class FxSchema {
   private final BitSet ids = new BitSet();
   public final String id;
   public final SimpleStringProperty name = new SimpleStringProperty(this, "name", "Schema");
-  final ObservableSet<FxBlock> blocks = observableSet();
-  final ObservableSet<FxBlockConnection> connections = observableSet();
+  private final ObservableSet<FxBlock> blocks = observableSet();
+  private final ObservableSet<FxBlockConnection> connections = observableSet();
   private final HashMap<Integer, FxBlock> blockMap = new HashMap<>();
   private final HashMap<Integer, HashMap<String, ArrayList<Input>>> outputs = new HashMap<>();
   private final HashMap<Integer, HashMap<String, ArrayList<Output>>> inputs = new HashMap<>();
@@ -123,6 +123,10 @@ public final class FxSchema {
     return connections.add(new FxBlockConnection(output, input));
   }
 
+  public boolean removeBlock(FxBlock block) {
+    return blocks.remove(block);
+  }
+
   public FxBlock getBlock(int id) {
     return blockMap.get(id);
   }
@@ -194,6 +198,7 @@ public final class FxSchema {
     var id = element.getAttribute("id");
     var name = element.getAttribute("name");
     var schema = new FxSchema(id);
+    schema.name.set(name);
     elementsByTag(element, "blocks", "block").forEach(el -> {
       var block = FxBlock.fromXml(schema, classLoader, el);
       schema.blocks.add(block);

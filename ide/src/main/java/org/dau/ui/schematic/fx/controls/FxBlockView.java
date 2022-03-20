@@ -215,9 +215,10 @@ public final class FxBlockView extends BorderPane {
       var p = FxBlockView.this.getParent();
       var data = (ConnectionData) p.getUserData();
       if (data != null && data.currentOut != null) {
-        data.currentOut.setSelected(false);
-        block.schema.addConnection(data.currentOut.output, input);
-        data.currentOut = null;
+        if (block.schema.addConnection(data.currentOut.output, input)) {
+          data.currentOut.setSelected(false);
+          data.currentOut = null;
+        }
       }
     }
 

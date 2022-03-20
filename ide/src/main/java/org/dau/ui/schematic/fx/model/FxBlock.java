@@ -140,7 +140,7 @@ public final class FxBlock {
   }
 
   public void remove() {
-    if (!schema.blocks.remove(this)) {
+    if (!schema.removeBlock(this)) {
       throw new NoSuchElementException(toString());
     }
   }
