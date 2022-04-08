@@ -14,16 +14,15 @@ import javafx.scene.layout.StackPane;
 import org.dau.ui.schematic.fx.model.FxBlock;
 import org.dau.ui.schematic.fx.model.FxBlockConnection;
 import org.dau.ui.schematic.fx.model.FxSchema;
+import org.springframework.util.DigestUtils;
 
-import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import static java.lang.Byte.toUnsignedInt;
 import static java.lang.Math.max;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javafx.scene.paint.Color.rgb;
+import static org.springframework.util.DigestUtils.md5Digest;
 
 public final class FxSchemaView extends StackPane {
 
@@ -160,24 +159,21 @@ public final class FxSchemaView extends StackPane {
     }
 
     private void calculateStroke() {
-      try {
-        var md = MessageDigest.getInstance("MD5");
-        md.update(connection.out().id.getBytes(UTF_8));
-        md.update(ByteBuffer.allocate(4).putInt(0, connection.out().getBlock().id).array());
-        var bytes = md.digest();
-        int r1 = toUnsignedInt(bytes[0]), r2 = toUnsignedInt(bytes[1]), r3 = toUnsignedInt(bytes[2]);
-        int g1 = toUnsignedInt(bytes[3]), g2 = toUnsignedInt(bytes[4]), g3 = toUnsignedInt(bytes[5]);
-        int b1 = toUnsignedInt(bytes[6]), b2 = toUnsignedInt(bytes[7]), b3 = toUnsignedInt(bytes[8]);
-        var color = rgb(r1 >= 60 ? r1 : r2 >= 60 ? r2 : max(60, r3), g1 >= 60 ? g1 : g2 >= 60 ? g2 : max(60, g3), b1 >= 60 ? b1 : b2 >= 60 ? b2 : max(60, b3));
-        path.setStroke(color);
-        path.setStrokeWidth(3d);
-        var strokeSource = toUnsignedInt(bytes[9]);
-        var stroke = STROKES[strokeSource % STROKES.length];
-        if (stroke.length > 0) {
-          path.setStrokeDashArray(stroke);
-        }
-      } catch (NoSuchAlgorithmException e) {
-        throw new IllegalStateException(e);
+      var bytes = md5Digest(connection.out().id.getBytes(UTF_8));
+      int r1 = toUnsignedInt(bytes[0]), r2 = toUnsignedInt(bytes[1]), r3 = toUnsignedInt(bytes[2]);
+      int g1 = toUnsignedInt(bytes[3]), g2 = toUnsignedInt(bytes[4]), g3 = toUnsignedInt(bytes[5]);
+      int b1 = toUnsignedInt(bytes[6]), b2 = toUnsignedInt(bytes[7]), b3 = toUnsignedInt(bytes[8]);
+      var color = rgb(
+        r1 >= 60 ? r1 : r2 >= 60 ? r2 : max(60, r3),
+        g1 >= 60 ? g1 : g2 >= 60 ? g2 : max(60, g3),
+        b1 >= 60 ? b1 : b2 >= 60 ? b2 : max(60, b3)
+      );
+      path.setStroke(color);
+      path.setStrokeWidth(3d);
+      var strokeSource = toUnsignedInt(bytes[9]);
+      var stroke = STROKES[strokeSource % STROKES.length];
+      if (stroke.length > 0) {
+        path.setStrokeDashArray(stroke);
       }
     }
   }

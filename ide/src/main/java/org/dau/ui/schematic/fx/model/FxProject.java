@@ -3,7 +3,9 @@ package org.dau.ui.schematic.fx.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import org.dau.classpath.Dependency;
 import org.dau.util.Encoders;
+import org.dau.util.Xmls;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -18,6 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
@@ -33,6 +36,8 @@ public final class FxProject {
   public final String id;
   public final SimpleStringProperty name = new SimpleStringProperty(this, "name");
   public final ObservableSet<FxSchema> schemas = FXCollections.observableSet();
+  public final ObservableSet<URI> repositories = FXCollections.observableSet();
+  public final ObservableSet<Dependency> dependencies = FXCollections.observableSet();
 
   private FxProject(String id) {
     this.id = id;
@@ -75,6 +80,24 @@ public final class FxProject {
 
       root.setAttribute("name", name.get());
 
+      var reposElement = doc.createElement("repositories");
+      root.appendChild(reposElement);
+      repositories.forEach(repo -> {
+        var repoElement = doc.createElement("repository");
+        repoElement.setTextContent(repo.toString());
+        reposElement.appendChild(repoElement);
+      });
+
+      var dependenciesElement = doc.createElement("dependencies");
+      root.appendChild(dependenciesElement);
+      dependencies.forEach(dep -> {
+        var depElement = doc.createElement("dependency");
+        depElement.setAttribute("group", dep.group());
+        depElement.setAttribute("name", dep.name());
+        depElement.setAttribute("version", dep.version());
+        dependenciesElement.appendChild(depElement);
+      });
+
       var tf = TransformerFactory.newDefaultInstance();
       tf.setAttribute("indent-number", 2);
       var t = tf.newTransformer();
@@ -106,6 +129,18 @@ public final class FxProject {
       var root = doc.getDocumentElement();
 
       name.set(root.getAttribute("name"));
+
+      Xmls.elementsByTag(root, "repositories", "repository").forEach(e -> {
+        var uri = URI.create(e.getTextContent());
+        repositories.add(uri);
+      });
+
+      Xmls.elementsByTag(root, "dependencies", "dependency").forEach(e -> {
+        var group = e.getAttribute("group");
+        var name = e.getAttribute("name");
+        var version = e.getAttribute("version");
+        dependencies.add(new Dependency(group, name, version));
+      });
     } catch (IOException | ParserConfigurationException | SAXException e) {
       throw new IllegalStateException(e);
     }

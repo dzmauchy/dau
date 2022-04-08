@@ -2,15 +2,15 @@ package org.dau.di;
 
 import java.util.function.Consumer;
 
-public final class B<T> {
+public final class Builder<T> {
 
   private final T v;
 
-  public B(T value) {
+  public Builder(T value) {
     this.v = value;
   }
 
-  public B<T> on(Consumer<T> consumer) {
+  public Builder<T> on(Consumer<T> consumer) {
     consumer.accept(v);
     return this;
   }

@@ -20,13 +20,14 @@ public class SchemaTab extends Tab {
     this.ctx = ctx;
     textProperty().bind(schema.name);
     setGraphic(IconFactory.icon("icons/blocks.png", 20));
-    setClosable(false);
     setContent(schemaPane);
+    setOnCloseRequest(ev -> ctx.close());
   }
 
   @Autowired
   public void initWith(ProjectTabs tabPane) {
     tabPane.getTabs().add(this);
+    tabPane.getSelectionModel().selectLast();
     ctx.addApplicationListener((ContextClosedEvent ev) -> tabPane.getTabs().remove(this));
   }
 }

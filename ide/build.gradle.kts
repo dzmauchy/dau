@@ -35,7 +35,7 @@ tasks.register<Exec>("standaloneRun") {
 }
 
 dependencies {
-  implementation(group = "org.eclipse.jdt", name = "org.eclipse.jdt.core", version = "3.28.0")
+  implementation(group = "org.eclipse.jdt", name = "org.eclipse.jdt.core", version = "3.29.0")
 
   implementation(group = "org.kordamp.ikonli", name = "ikonli-javafx", version = ikonliVersion)
   for (lib in ikonliLibs) {
