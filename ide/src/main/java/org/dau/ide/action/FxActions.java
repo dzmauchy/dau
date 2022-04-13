@@ -82,7 +82,7 @@ public final class FxActions {
     });
     menuActions.forEach((barKey, groups) -> {
       var menu = new Menu();
-      menu.textProperty().bind(Localization.binding(barKey.group));
+      menu.textProperty().bind(Localization.INSTANCE.binding(barKey.group));
       menuBar.getMenus().add(menu);
       var first = new AtomicBoolean(true);
       groups.forEach((key, actions) -> {

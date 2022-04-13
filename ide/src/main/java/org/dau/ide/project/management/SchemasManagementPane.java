@@ -42,7 +42,7 @@ public class SchemasManagementPane extends TitledPane {
   private final ProjectSchemas projectSchemas;
 
   public SchemasManagementPane(FxProject project, ProjectSchemas projectSchemas) {
-    textProperty().bind(Localization.binding("Schemas"));
+    textProperty().bind(Localization.INSTANCE.binding("Schemas"));
     setGraphic(IconFactory.icon(Ionicons4IOS.LIST, 16));
     this.project = project;
     this.projectSchemas = projectSchemas;

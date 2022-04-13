@@ -10,6 +10,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.dau.di.PrototypeComponent;
+import org.dau.ide.l10n.Localization;
 import org.dau.ide.main.MainDirectories;
 import org.dau.ide.main.MainQualifier;
 import org.dau.ui.schematic.fx.model.FxProject;
@@ -32,7 +33,7 @@ public class ProjectsDialog extends Dialog<ObservableList<Path>> {
     getDialogPane().getButtonTypes().setAll(ButtonType.APPLY, ButtonType.CANCEL);
     initTable(directories);
     getDialogPane().setContent(table);
-    titleProperty().bind(binding("Projects"));
+    titleProperty().bind(Localization.binding("Projects"));
     setResultConverter(param -> switch (param.getButtonData()) {
       case APPLY -> table.getSelectionModel().getSelectedItems();
       case CANCEL_CLOSE -> null;

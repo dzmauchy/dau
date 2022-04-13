@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class LibrariesManagementPane extends TitledPane {
 
   public LibrariesManagementPane() {
-    textProperty().bind(Localization.binding("Libraries"));
+    textProperty().bind(Localization.INSTANCE.binding("Libraries"));
     setGraphic(IconFactory.icon(Zondicons.LIBRARY, 16));
   }
 }

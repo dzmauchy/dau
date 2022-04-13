@@ -61,7 +61,7 @@ public class MainActions {
       .on(() -> {
         var directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(directories.homeDir.toFile());
-        directoryChooser.titleProperty().bind(Localization.binding("Choose a directory to import"));
+        directoryChooser.titleProperty().bind(Localization.INSTANCE.binding("Choose a directory to import"));
         var dir = directoryChooser.showDialog(stage);
         if (dir != null) {
           projects.projects.add(FxProject.load(dir.toPath()));

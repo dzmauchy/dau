@@ -8,6 +8,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
+import org.dau.ide.l10n.Localization;
 import org.dau.ui.icons.IconFactory;
 import org.dau.ui.schematic.fx.model.FxProject;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 
 import static org.dau.di.Builder.with;
-import static org.dau.ide.l10n.Localization.binding;
 
 @Component
 @Order(2)
@@ -38,7 +38,7 @@ public class RepositoriesManagementPane extends TitledPane {
   private final ToolBar toolBar = new ToolBar();
 
   public RepositoriesManagementPane(FxProject project) {
-    textProperty().bind(binding("Repositories"));
+    textProperty().bind(Localization.binding("Repositories"));
     setGraphic(IconFactory.icon(RemixiconAL.GIT_REPOSITORY_FILL, 16));
     this.project = project;
     this.repositories = FXCollections.observableArrayList(project.repositories);
@@ -84,7 +84,7 @@ public class RepositoriesManagementPane extends TitledPane {
           dlg.setTitle("URL");
           dlg.setContentText("URL: ");
           dlg.getDialogPane().setPrefWidth(800);
-          dlg.headerTextProperty().bind(binding("Repository URL"));
+          dlg.headerTextProperty().bind(Localization.binding("Repository URL"));
           dlg.showAndWait().ifPresent(url -> project.repositories.add(URI.create(url)));
         })
       )
@@ -93,13 +93,13 @@ public class RepositoriesManagementPane extends TitledPane {
     toolBar.getItems().addAll(
       with(new Button(),
         b -> b.setGraphic(IconFactory.icon(Ionicons4IOS.REMOVE, 20)),
-        b -> b.setTooltip(with(new Tooltip(), t -> t.textProperty().bind(binding("Remove")))),
+        b -> b.setTooltip(with(new Tooltip(), t -> t.textProperty().bind(Localization.binding("Remove")))),
         b -> b.disableProperty().bind(listView.getSelectionModel().selectedItemProperty().isNull()),
         b -> b.setOnAction(ev -> project.repositories.remove(listView.getSelectionModel().getSelectedItem()))
       ),
       with(new Button(),
         b -> b.setGraphic(IconFactory.icon(Material.CLEAR, 20)),
-        b -> b.setTooltip(with(new Tooltip(), t -> t.textProperty().bind(binding("Clear")))),
+        b -> b.setTooltip(with(new Tooltip(), t -> t.textProperty().bind(Localization.binding("Clear")))),
         b -> b.disableProperty().bind(Bindings.isEmpty(listView.getItems())),
         b -> b.setOnAction(ev -> project.repositories.clear())
       )

@@ -11,7 +11,7 @@ public class ProjectManagementTab extends Tab {
 
   public ProjectManagementTab(ProjectManagementPane settingsPane) {
     setGraphic(IconFactory.icon(Material.SETTINGS, 20));
-    textProperty().bind(Localization.binding("Management"));
+    textProperty().bind(Localization.INSTANCE.binding("Management"));
     setClosable(false);
     setContent(settingsPane);
   }
