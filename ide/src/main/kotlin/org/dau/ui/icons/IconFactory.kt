@@ -31,7 +31,7 @@ object IconFactory {
 
   @JvmStatic
   @JvmOverloads
-  fun icon(icon: Ikon, color: Color = Color.LIGHTGRAY, size: Int) = FontIcon(icon).apply {
+  fun icon(icon: Ikon, size: Int = 0, color: Color = Color.LIGHTGRAY) = FontIcon(icon).apply {
     iconColor = color
     if (size > 0) iconSize = size
   }

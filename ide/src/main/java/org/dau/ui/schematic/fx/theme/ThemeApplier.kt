@@ -1,19 +1,20 @@
-package org.dau.ui.schematic.fx.theme;
+package org.dau.ui.schematic.fx.theme
 
-import com.sun.javafx.css.StyleManager;
-import javafx.application.Application;
+import com.sun.javafx.css.StyleManager
+import javafx.application.Application
 
-import static javafx.application.Application.STYLESHEET_MODENA;
+import javafx.application.Application.STYLESHEET_MODENA
 
-public interface ThemeApplier {
+object ThemeApplier {
 
-  static void apply() {
-    var classLoader = Thread.currentThread().getContextClassLoader();
-    var themeUrl = classLoader.getResource("theme.css");
-    Application.setUserAgentStylesheet(STYLESHEET_MODENA);
-    var styleManager = StyleManager.getInstance();
+  @JvmStatic
+  fun apply() {
+    val classLoader = Thread.currentThread().contextClassLoader
+    val themeUrl = classLoader.getResource("theme.css")
+    Application.setUserAgentStylesheet(STYLESHEET_MODENA)
+    val styleManager = StyleManager.getInstance()
     if (themeUrl != null) {
-      styleManager.addUserAgentStylesheet(themeUrl.toString());
+      styleManager.addUserAgentStylesheet(themeUrl.toString())
     }
   }
 }
