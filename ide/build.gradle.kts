@@ -1,9 +1,11 @@
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
   java
+  kotlin("jvm").version(kotlinVersion)
   id("org.springframework.boot").version(springBootVersion)
 }
 
@@ -32,6 +34,17 @@ tasks.register<Exec>("standaloneRun") {
   executable = "java"
   workingDir = projectDir.resolve("build").resolve("libs")
   args("-jar", "${project.name}-${project.version}.jar")
+}
+
+tasks.withType<KotlinCompile> {
+
+  targetCompatibility = javaVersion.toString()
+  sourceCompatibility = javaVersion.toString()
+
+  kotlinOptions {
+    jvmTarget = javaVersion.toString()
+    javaParameters = true
+  }
 }
 
 dependencies {

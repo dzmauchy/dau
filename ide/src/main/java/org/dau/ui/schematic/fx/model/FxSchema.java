@@ -8,7 +8,7 @@ import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
 import org.dau.ui.schematic.fx.model.FxBlock.Input;
 import org.dau.ui.schematic.fx.model.FxBlock.Output;
-import org.dau.util.Encoders;
+import org.dau.ui.utils.Encoders;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javafx.collections.FXCollections.observableSet;
-import static org.dau.util.Xmls.elementsByTag;
+import static org.dau.ui.utils.Xmls.elementsByTag;
 
 public final class FxSchema {
 
@@ -290,6 +290,10 @@ public final class FxSchema {
 
   public IntegerBinding blockCount() {
     return Bindings.size(blocks);
+  }
+
+  public String toFileName() {
+    return "schema-" + id + ".xml";
   }
 
   @Override

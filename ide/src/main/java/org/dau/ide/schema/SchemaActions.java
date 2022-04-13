@@ -13,7 +13,7 @@ public final class SchemaActions {
   public FxAction saveAction(SchemaConf conf, ProjectConf projectConf) {
     return new FxAction("icons/save.png", "Save")
       .on(() -> {
-        var file = projectConf.directory.resolve("schema-" + conf.schema.id + ".xml");
+        var file = projectConf.directory.resolve(conf.schema.toFileName());
         conf.schema.save(file);
       });
   }

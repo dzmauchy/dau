@@ -1,0 +1,167 @@
+package org.dau.ui.bindings
+
+import javafx.beans.binding.FloatExpression
+import javafx.beans.binding.IntegerExpression
+import javafx.beans.binding.LongExpression
+import javafx.beans.binding.StringExpression
+import javafx.beans.value.ObservableDoubleValue
+import javafx.beans.value.ObservableFloatValue
+import javafx.beans.value.ObservableIntegerValue
+import javafx.beans.value.ObservableLongValue
+import javafx.beans.value.ObservableValue
+import javafx.beans.binding.Bindings.createBooleanBinding as cbb
+import javafx.beans.binding.Bindings.createDoubleBinding as cdb
+import javafx.beans.binding.Bindings.createFloatBinding as cfb
+import javafx.beans.binding.Bindings.createIntegerBinding as cib
+import javafx.beans.binding.Bindings.createLongBinding as clb
+import javafx.beans.binding.Bindings.createObjectBinding as cob
+import javafx.beans.binding.Bindings.createStringBinding as csb
+import javafx.beans.binding.BooleanBinding as BB
+import javafx.beans.binding.DoubleBinding as DB
+import javafx.beans.binding.FloatBinding as FB
+import javafx.beans.binding.IntegerBinding as IB
+import javafx.beans.binding.LongBinding as LB
+import javafx.beans.binding.ObjectBinding as OB
+import javafx.beans.binding.StringBinding as SB
+
+inline fun BB.map(crossinline f: (Boolean) -> Boolean): BB = cbb({ f(get()) }, this)
+inline fun BB.mapS(crossinline f: (Boolean) -> String?): SB = csb({ f(get()) }, this)
+inline fun BB.mapI(crossinline f: (Boolean) -> Int): IB = cib({ f(get()) }, this)
+inline fun BB.mapL(crossinline f: (Boolean) -> Long): LB = clb({ f(get()) }, this)
+inline fun BB.mapD(crossinline f: (Boolean) -> Double): DB = cdb({ f(get()) }, this)
+inline fun BB.mapF(crossinline f: (Boolean) -> Float): FB = cfb({ f(get()) }, this)
+inline fun <T> BB.mapO(crossinline f: (Boolean) -> T): OB<T> = cob({ f(get()) }, this)
+
+inline fun DB.mapB(crossinline f: (Double) -> Boolean): BB = cbb({ f(get()) }, this)
+inline fun DB.mapS(crossinline f: (Double) -> String?): SB = csb({ f(get()) }, this)
+inline fun DB.mapI(crossinline f: (Double) -> Int): IB = cib({ f(get()) }, this)
+inline fun DB.mapL(crossinline f: (Double) -> Long): LB = clb({ f(get()) }, this)
+inline fun DB.map(crossinline f: (Double) -> Double): DB = cdb({ f(get()) }, this)
+inline fun DB.mapF(crossinline f: (Double) -> Float): FB = cfb({ f(get()) }, this)
+inline fun <T> DB.mapO(crossinline f: (Double) -> T): OB<T> = cob({ f(get()) }, this)
+operator fun DB.plus(b: Int): DB = add(b)
+operator fun DB.plus(b: Long): DB = add(b)
+operator fun DB.plus(b: Float): DB = add(b)
+operator fun DB.plus(b: Double): DB = add(b)
+operator fun DB.plus(b: ObservableIntegerValue): DB = cdb({get() + b.get()}, this, b)
+operator fun DB.plus(b: ObservableLongValue): DB = cdb({get() + b.get()}, this, b)
+operator fun DB.plus(b: ObservableFloatValue): DB = cdb({get() + b.get()}, this, b)
+operator fun DB.plus(b: ObservableDoubleValue): DB = cdb({get() + b.get()}, this, b)
+operator fun DB.plus(b: ObservableValue<Number>): DB = cdb({get() + b.value.toDouble()}, this, b)
+operator fun DB.minus(b: Int): DB = subtract(b)
+operator fun DB.minus(b: Long): DB = subtract(b)
+operator fun DB.minus(b: Float): DB = subtract(b)
+operator fun DB.minus(b: Double): DB = subtract(b)
+operator fun DB.minus(b: ObservableIntegerValue): DB = cdb({get() - b.get()}, this, b)
+operator fun DB.minus(b: ObservableLongValue): DB = cdb({get() - b.get()}, this, b)
+operator fun DB.minus(b: ObservableFloatValue): DB = cdb({get() - b.get()}, this, b)
+operator fun DB.minus(b: ObservableDoubleValue): DB = cdb({get() - b.get()}, this, b)
+operator fun DB.minus(b: ObservableValue<Number>): DB = cdb({get() - b.value.toDouble()}, this, b)
+operator fun DB.times(b: Int): DB = multiply(b)
+operator fun DB.times(b: Long): DB = multiply(b)
+operator fun DB.times(b: Float): DB = multiply(b)
+operator fun DB.times(b: Double): DB = multiply(b)
+operator fun DB.times(b: ObservableIntegerValue): DB = cdb({get() * b.get()}, this, b)
+operator fun DB.times(b: ObservableLongValue): DB = cdb({get() * b.get()}, this, b)
+operator fun DB.times(b: ObservableFloatValue): DB = cdb({get() * b.get()}, this, b)
+operator fun DB.times(b: ObservableDoubleValue): DB = cdb({get() * b.get()}, this, b)
+operator fun DB.times(b: ObservableValue<Number>): DB = cdb({get() * b.value.toDouble()}, this, b)
+operator fun DB.div(b: Int): DB = divide(b)
+operator fun DB.div(b: Long): DB = divide(b)
+operator fun DB.div(b: Float): DB = divide(b)
+operator fun DB.div(b: Double): DB = divide(b)
+operator fun DB.div(b: ObservableIntegerValue): DB = cdb({get() / b.get()}, this, b)
+operator fun DB.div(b: ObservableLongValue): DB = cdb({get() / b.get()}, this, b)
+operator fun DB.div(b: ObservableFloatValue): DB = cdb({get() / b.get()}, this, b)
+operator fun DB.div(b: ObservableDoubleValue): DB = cdb({get() / b.get()}, this, b)
+operator fun DB.div(b: ObservableValue<Number>): DB = cdb({get() / b.value.toDouble()}, this, b)
+
+inline fun FB.mapB(crossinline f: (Float) -> Boolean): BB = cbb({ f(get()) }, this)
+inline fun FB.mapS(crossinline f: (Float) -> String?): SB = csb({ f(get()) }, this)
+inline fun FB.mapI(crossinline f: (Float) -> Int): IB = cib({ f(get()) }, this)
+inline fun FB.mapL(crossinline f: (Float) -> Long): LB = clb({ f(get()) }, this)
+inline fun FB.mapD(crossinline f: (Float) -> Double): DB = cdb({ f(get()) }, this)
+inline fun FB.map(crossinline f: (Float) -> Float): FB = cfb({ f(get()) }, this)
+inline fun <T> FB.mapO(crossinline f: (Float) -> T): OB<T> = cob({ f(get()) }, this)
+operator fun FloatExpression.plus(b: Int): FB = add(b)
+operator fun FloatExpression.plus(b: Long): FB = add(b)
+operator fun FloatExpression.plus(b: Float): FB = add(b)
+operator fun FloatExpression.plus(b: Double): DB = add(b)
+operator fun FloatExpression.minus(b: Int): FB = subtract(b)
+operator fun FloatExpression.minus(b: Long): FB = subtract(b)
+operator fun FloatExpression.minus(b: Float): FB = subtract(b)
+operator fun FloatExpression.minus(b: Double): DB = subtract(b)
+operator fun FloatExpression.times(b: Int): FB = multiply(b)
+operator fun FloatExpression.times(b: Long): FB = multiply(b)
+operator fun FloatExpression.times(b: Float): FB = multiply(b)
+operator fun FloatExpression.times(b: Double): DB = multiply(b)
+operator fun FloatExpression.div(b: Int): FB = divide(b)
+operator fun FloatExpression.div(b: Long): FB = divide(b)
+operator fun FloatExpression.div(b: Float): FB = divide(b)
+operator fun FloatExpression.div(b: Double): DB = divide(b)
+
+inline fun IB.mapB(crossinline f: (Int) -> Boolean): BB = cbb({ f(get()) }, this)
+inline fun IB.mapS(crossinline f: (Int) -> String?): SB = csb({ f(get()) }, this)
+inline fun IB.map(crossinline f: (Int) -> Int): IB = cib({ f(get()) }, this)
+inline fun IB.mapL(crossinline f: (Int) -> Long): LB = clb({ f(get()) }, this)
+inline fun IB.mapD(crossinline f: (Int) -> Double): DB = cdb({ f(get()) }, this)
+inline fun IB.mapF(crossinline f: (Int) -> Float): FB = cfb({ f(get()) }, this)
+inline fun <T> IB.mapO(crossinline f: (Int) -> T): OB<T> = cob({ f(get()) }, this)
+operator fun IntegerExpression.plus(b: Int): IB = add(b)
+operator fun IntegerExpression.plus(b: Long): LB = add(b)
+operator fun IntegerExpression.plus(b: Float): FB = add(b)
+operator fun IntegerExpression.plus(b: Double): DB = add(b)
+operator fun IntegerExpression.minus(b: Int): IB = subtract(b)
+operator fun IntegerExpression.minus(b: Long): LB = subtract(b)
+operator fun IntegerExpression.minus(b: Float): FB = subtract(b)
+operator fun IntegerExpression.minus(b: Double): DB = subtract(b)
+operator fun IntegerExpression.times(b: Int): IB = multiply(b)
+operator fun IntegerExpression.times(b: Long): LB = multiply(b)
+operator fun IntegerExpression.times(b: Float): FB = multiply(b)
+operator fun IntegerExpression.times(b: Double): DB = multiply(b)
+operator fun IntegerExpression.div(b: Int): IB = divide(b)
+operator fun IntegerExpression.div(b: Long): LB = divide(b)
+operator fun IntegerExpression.div(b: Float): FB = divide(b)
+operator fun IntegerExpression.div(b: Double): DB = divide(b)
+
+inline fun LB.mapB(crossinline f: (Long) -> Boolean): BB = cbb({ f(get()) }, this)
+inline fun LB.mapS(crossinline f: (Long) -> String?): SB = csb({ f(get()) }, this)
+inline fun LB.mapI(crossinline f: (Long) -> Int): IB = cib({ f(get()) }, this)
+inline fun LB.map(crossinline f: (Long) -> Long): LB = clb({ f(get()) }, this)
+inline fun LB.mapD(crossinline f: (Long) -> Double): DB = cdb({ f(get()) }, this)
+inline fun LB.mapF(crossinline f: (Long) -> Float): FB = cfb({ f(get()) }, this)
+inline fun <T> LB.mapO(crossinline f: (Long) -> T): OB<T> = cob({ f(get()) }, this)
+operator fun LongExpression.plus(b: Int): LB = add(b)
+operator fun LongExpression.plus(b: Long): LB = add(b)
+operator fun LongExpression.plus(b: Float): FB = add(b)
+operator fun LongExpression.plus(b: Double): DB = add(b)
+operator fun LongExpression.minus(b: Int): LB = subtract(b)
+operator fun LongExpression.minus(b: Long): LB = subtract(b)
+operator fun LongExpression.minus(b: Float): FB = subtract(b)
+operator fun LongExpression.minus(b: Double): DB = subtract(b)
+operator fun LongExpression.times(b: Int): LB = multiply(b)
+operator fun LongExpression.times(b: Long): LB = multiply(b)
+operator fun LongExpression.times(b: Float): FB = multiply(b)
+operator fun LongExpression.times(b: Double): DB = multiply(b)
+operator fun LongExpression.div(b: Int): LB = divide(b)
+operator fun LongExpression.div(b: Long): LB = divide(b)
+operator fun LongExpression.div(b: Float): FB = divide(b)
+operator fun LongExpression.div(b: Double): DB = divide(b)
+
+inline fun SB.mapB(crossinline f: (String?) -> Boolean): BB = cbb({ f(get()) }, this)
+inline fun SB.map(crossinline f: (String?) -> String?): SB = csb({ f(get()) }, this)
+inline fun SB.mapI(crossinline f: (String?) -> Int): IB = cib({ f(get()) }, this)
+inline fun SB.mapL(crossinline f: (String?) -> Long): LB = clb({ f(get()) }, this)
+inline fun SB.mapD(crossinline f: (String?) -> Double): DB = cdb({ f(get()) }, this)
+inline fun SB.mapF(crossinline f: (String?) -> Float): FB = cfb({ f(get()) }, this)
+inline fun <T> SB.mapO(crossinline f: (String?) -> T): OB<T> = cob({ f(get()) }, this)
+operator fun StringExpression.plus(b: String): SB = csb({get() + b}, this)
+operator fun StringExpression.plus(b: ObservableValue<String?>): SB = csb({get() + b.value}, this, b)
+
+inline fun <S> OB<S>.mapB(crossinline f: (S) -> Boolean): BB = cbb({ f(get()) }, this)
+inline fun <S> OB<S>.mapS(crossinline f: (S) -> String?): SB = csb({ f(get()) }, this)
+inline fun <S> OB<S>.mapI(crossinline f: (S) -> Int): IB = cib({ f(get()) }, this)
+inline fun <S> OB<S>.mapL(crossinline f: (S) -> Long): LB = clb({ f(get()) }, this)
+inline fun <S> OB<S>.mapD(crossinline f: (S) -> Double): DB = cdb({ f(get()) }, this)
+inline fun <S> OB<S>.mapF(crossinline f: (S) -> Float): FB = cfb({ f(get()) }, this)
+inline fun <S, T> OB<S>.map(crossinline f: (S) -> T): OB<T> = cob({ f(get()) }, this)

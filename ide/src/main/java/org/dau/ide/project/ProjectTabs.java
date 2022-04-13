@@ -8,8 +8,6 @@ import org.dau.ui.schematic.fx.model.FxSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static javafx.application.Platform.runLater;
-
 @Component
 public class ProjectTabs extends TabPane {
 
@@ -25,8 +23,5 @@ public class ProjectTabs extends TabPane {
         getTabs().removeIf(tab -> tab instanceof SchemaTab t && t.schema == schema);
       }
     });
-    if (project.schemas.isEmpty()) {
-      runLater(() -> project.schemas.add(new FxSchema()));
-    }
   }
 }
