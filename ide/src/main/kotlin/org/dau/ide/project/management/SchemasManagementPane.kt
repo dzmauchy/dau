@@ -12,7 +12,6 @@ import javafx.scene.control.cell.TextFieldTableCell
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.util.converter.DefaultStringConverter
-import org.dau.di.Builder.with
 import org.dau.di.Init
 import org.dau.ide.l10n.Localization
 import org.dau.ide.project.ProjectSchemas
@@ -79,10 +78,9 @@ class SchemasManagementPane(
       .width(400)
       .value { f ->
         val box = HBox(
-          with(Button(),
-            { it.graphic = IconFactory.icon(Material.OPEN_IN_NEW, 16) },
-            { it.setOnAction { projectSchemas.addSchema(f?.value) } }
-          )
+          Button(null, IconFactory.icon(Material.OPEN_IN_NEW, 16)).apply {
+            setOnAction { projectSchemas.addSchema(f?.value) }
+          }
         )
         box.alignment = Pos.CENTER
         SimpleObjectProperty(box)

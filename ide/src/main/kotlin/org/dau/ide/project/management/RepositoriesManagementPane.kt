@@ -9,9 +9,9 @@ import javafx.geometry.Orientation
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.stage.Modality
-import org.dau.di.Builder.with
 import org.dau.di.Init
 import org.dau.ide.l10n.Localization
+import org.dau.ide.l10n.Localization.l
 import org.dau.ui.icons.IconFactory
 import org.dau.ui.schematic.fx.model.FxProject
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS
@@ -74,37 +74,30 @@ class RepositoriesManagementPane(private val project: FxProject) : TitledPane() 
   @Autowired
   fun initToolbar(init: Init) = init.schedule(this) {
     toolBar.items.addAll(
-      with(Button(),
-        { it.graphic = IconFactory.icon(Ionicons4IOS.ADD_CIRCLE_OUTLINE, 20) },
-        { it.tooltip = with(Tooltip("URL")) },
-        {
-          it.setOnAction {
-            val dlg = TextInputDialog()
-            dlg.initModality(Modality.APPLICATION_MODAL)
-            dlg.initOwner(scene.window)
-            dlg.title = "URL"
-            dlg.contentText = "URL: "
-            dlg.dialogPane.prefWidth = 800.0
-            dlg.headerTextProperty().bind(Localization.binding("Repository URL"))
-            dlg.showAndWait().ifPresent { url -> project.repositories.add(URI.create(url)) }
-          }
+      Button(null, IconFactory.icon(Ionicons4IOS.ADD_CIRCLE_OUTLINE, 20)).apply {
+        tooltip = Tooltip("URL")
+        setOnAction {
+          val dlg = TextInputDialog()
+          dlg.initModality(Modality.APPLICATION_MODAL)
+          dlg.initOwner(scene.window)
+          dlg.title = "URL"
+          dlg.contentText = "URL: "
+          dlg.dialogPane.prefWidth = 800.0
+          dlg.headerTextProperty().bind(Localization.binding("Repository URL"))
+          dlg.showAndWait().ifPresent { url -> project.repositories.add(URI.create(url)) }
         }
-      )
-    )
-    toolBar.items.add(Separator(Orientation.VERTICAL))
-    toolBar.items.addAll(
-      with(Button(),
-        { it.graphic = IconFactory.icon(Ionicons4IOS.REMOVE, 20) },
-        { it.tooltip = with(Tooltip(), { t -> t.textProperty().bind(Localization.binding("Remove")) }) },
-        { it.disableProperty().bind(listView.selectionModel.selectedItemProperty().isNull) },
-        { it.setOnAction { project.repositories.remove(listView.selectionModel.selectedItem) } }
-      ),
-      with(Button(),
-        { it.graphic = IconFactory.icon(Material.CLEAR, 20) },
-        { it.tooltip = with(Tooltip(), { t -> t.textProperty().bind(Localization.binding("Clear")) }) },
-        { it.disableProperty().bind(Bindings.isEmpty(listView.items)) },
-        { it.setOnAction { project.repositories.clear() } }
-      )
+      },
+      Separator(Orientation.VERTICAL),
+      Button(null, IconFactory.icon(Ionicons4IOS.REMOVE, 20)).apply {
+        tooltip = Tooltip().apply { textProperty().bind("Remove".l()) }
+        disableProperty().bind(listView.selectionModel.selectedItemProperty().isNull)
+        setOnAction { project.repositories.remove(listView.selectionModel.selectedItem) }
+      },
+      Button(null, IconFactory.icon(Material.CLEAR, 20)).apply {
+        tooltip = Tooltip().apply { textProperty().bind("Clear".l()) }
+        disableProperty().bind(Bindings.isEmpty(listView.items))
+        setOnAction { project.repositories.clear() }
+      }
     )
   }
 }

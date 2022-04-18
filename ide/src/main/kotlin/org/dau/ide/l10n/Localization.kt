@@ -79,4 +79,9 @@ object Localization {
         *arrayOf<Observable>(text, LOCALE_PROPERTY) + observables
       )
     }
+
+  fun String?.l(vararg args: Any?): StringBinding = when (this) {
+    null -> createStringBinding({ null })
+    else -> binding(this, *args)
+  }
 }
