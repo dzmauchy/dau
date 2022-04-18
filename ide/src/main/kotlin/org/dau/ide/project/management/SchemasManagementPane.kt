@@ -13,6 +13,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.util.converter.DefaultStringConverter
 import org.dau.di.Builder.with
+import org.dau.di.Init
 import org.dau.ide.l10n.Localization
 import org.dau.ide.project.ProjectSchemas
 import org.dau.ui.icons.IconFactory
@@ -110,39 +111,31 @@ class SchemasManagementPane(
   }
 
   @Autowired
-  fun initToolbar() {
+  fun initToolbar(init: Init) = init.schedule(this) {
     toolBar.items.addAll(
-      with(Button(),
-        { it.graphic = IconFactory.icon(Ionicons4IOS.ADD, 20) },
-        {
-          it.setOnAction {
-            val schema = FxSchema()
-            schema.name.set("New schema")
-            project.schemas.add(schema)
-          }
+      Button(null, IconFactory.icon(Ionicons4IOS.ADD, 20)).apply {
+        setOnAction {
+          val schema = FxSchema()
+          schema.name.set("New schema")
+          project.schemas.add(schema)
         }
-      ),
-      with(Button(),
-        { it.graphic = IconFactory.icon(Ionicons4IOS.REMOVE, 20) },
-        {
-          it.setOnAction {
-            val item = table.selectionModel.selectedItem
-            project.schemas.remove(item)
-          }
-        },
-        { it.disableProperty().bind(table.selectionModel.selectedItemProperty().isNull) }
-      )
+      },
+      Button(null, IconFactory.icon(Ionicons4IOS.REMOVE, 20)).apply {
+        setOnAction {
+          val item = table.selectionModel.selectedItem
+          project.schemas.remove(item)
+        }
+        disableProperty().bind(table.selectionModel.selectedItemProperty().isNull)
+      },
+      Separator(Orientation.VERTICAL),
+      Button(null, IconFactory.icon(Material.SORT, 20)).apply {
+        setOnAction { table.sort() }
+      },
+      Separator(Orientation.VERTICAL),
+      Button(null, IconFactory.icon(Material.OPEN_IN_NEW, 20)).apply {
+        setOnAction { projectSchemas.addSchema(table.selectionModel.selectedItem) }
+        disableProperty().bind(table.selectionModel.selectedItemProperty().isNull)
+      }
     )
-    toolBar.items.add(Separator(Orientation.VERTICAL))
-    toolBar.items.add(with(Button(),
-      { it.graphic = IconFactory.icon(Material.SORT, 20) },
-      { it.setOnAction { table.sort() } }
-    ))
-    toolBar.items.add(Separator(Orientation.VERTICAL))
-    toolBar.items.add(with(Button(),
-      { it.graphic = IconFactory.icon(Material.OPEN_IN_NEW, 20) },
-      { it.setOnAction { projectSchemas.addSchema(table.selectionModel.selectedItem) } },
-      { it.disableProperty().bind(table.selectionModel.selectedItemProperty().isNull) }
-    ))
   }
 }

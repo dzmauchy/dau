@@ -32,7 +32,7 @@ val javaVersion = JavaVersion.VERSION_17
 val kotlinVersion = "1.6.20"
 
 val springBootVersion = "2.6.4"
-val springVersion = "5.3.18"
+val springVersion = "5.3.19"
 val ikonliVersion = "12.3.0"
 val log4jVersion = "2.17.1"
 val slf4jVersion = "1.7.36"
