@@ -1,4 +1,4 @@
-package org.dau.ui.schematic.fx.theme
+package org.dau.ui.fx
 
 import com.sun.javafx.css.StyleManager
 import javafx.application.Application
@@ -7,8 +7,7 @@ import javafx.application.Application.STYLESHEET_MODENA
 
 object ThemeApplier {
 
-  @JvmStatic
-  fun apply() {
+  fun invoke() {
     val classLoader = Thread.currentThread().contextClassLoader
     val themeUrl = classLoader.getResource("theme.css")
     Application.setUserAgentStylesheet(STYLESHEET_MODENA)

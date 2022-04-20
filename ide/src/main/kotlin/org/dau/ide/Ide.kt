@@ -7,7 +7,7 @@ import org.dau.di.Ctx
 import org.dau.ide.logging.FxInitLogHandler
 import org.dau.ide.logging.FxLogHandler
 import org.dau.ide.main.MainConf
-import org.dau.ui.schematic.fx.theme.ThemeApplier
+import org.dau.ui.fx.ThemeApplier
 import java.util.function.Supplier
 
 import java.util.logging.Logger
@@ -30,7 +30,7 @@ class Ide : Application() {
     logger.info { "Process " + process.pid() + "; " + process.info().commandLine().orElse("") }
 
     // theme
-    Platform.runLater(ThemeApplier::apply)
+    Platform.runLater(ThemeApplier::invoke)
   }
 
   override fun start(primaryStage: Stage) {
