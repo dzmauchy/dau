@@ -21,8 +21,8 @@ class Ide : Application() {
     val rootLogger = Logger.getLogger("")
     val fxHandler = FxLogHandler()
     rootLogger.addHandler(fxHandler)
-    rootLogger.removeHandler(FxInitLogHandler.INSTANCE)
-    fxHandler.copyFrom(FxInitLogHandler.INSTANCE)
+    rootLogger.removeHandler(FxInitLogHandler)
+    fxHandler.copyFrom(FxInitLogHandler)
 
     // first logging
     val logger = Logger.getLogger("init")
