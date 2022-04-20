@@ -37,7 +37,7 @@ public final class FxAction {
 
   public FxAction(String text, Object... args) {
     if (text != null) {
-      this.text.bind(Localization.INSTANCE.binding(text, args));
+      this.text.bind(Localization.binding(text, args));
     }
   }
 
@@ -58,19 +58,19 @@ public final class FxAction {
   public FxAction(String description, KeyCombination key, String icon, String text, Object... args) {
     this(key, icon, text, args);
     if (description != null) {
-      this.description.bind(Localization.INSTANCE.binding(description, args));
+      this.description.bind(Localization.binding(description, args));
     }
   }
 
   public FxAction(String description, String icon, String text, Object... args) {
     this(icon, text, args);
     if (description != null) {
-      this.description.bind(Localization.INSTANCE.binding(description, args));
+      this.description.bind(Localization.binding(description, args));
     }
   }
 
   public FxAction text(ObservableValue<String> text, ObservableValue<?>... args) {
-    this.text.bind(Localization.INSTANCE.binding(text, args));
+    this.text.bind(Localization.binding(text, args));
     return this;
   }
 
@@ -80,7 +80,7 @@ public final class FxAction {
   }
 
   public FxAction description(ObservableValue<String> text, ObservableValue<?>... args) {
-    this.text.bind(Localization.INSTANCE.binding(text, args));
+    this.text.bind(Localization.binding(text, args));
     return this;
   }
 
@@ -98,13 +98,13 @@ public final class FxAction {
     return this;
   }
 
-  public FxAction on(EventHandler<ActionEvent> handler) {
+  public FxAction handle(EventHandler<ActionEvent> handler) {
     this.handler.bind(new SimpleObjectProperty<>(handler));
     return this;
   }
 
   public FxAction on(Runnable task) {
-    return on(ev -> task.run());
+    return handle(ev -> task.run());
   }
 
   public FxAction handler(ObservableValue<EventHandler<ActionEvent>> handler) {
