@@ -5,6 +5,7 @@ import javafx.beans.value.ObservableValue
 import javafx.scene.Node
 import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
+import javafx.scene.control.TableColumn.CellDataFeatures
 import javafx.util.Callback
 import org.dau.ide.l10n.Localization
 import java.util.function.Consumer
@@ -35,17 +36,17 @@ class TableColumnBuilder<S, T>(text: StringBinding) {
     return this
   }
 
-  fun graphic(node: ObservableValue<Node?>?): TableColumnBuilder<S, T> {
+  fun graphic(node: ObservableValue<Node?>): TableColumnBuilder<S, T> {
     column.graphicProperty().bind(node)
     return this
   }
 
-  fun value(v: Callback<TableColumn.CellDataFeatures<S, T>?, ObservableValue<T>?>?): TableColumnBuilder<S, T> {
+  fun value(v: Callback<CellDataFeatures<S, T>, ObservableValue<T>>): TableColumnBuilder<S, T> {
     column.cellValueFactory = v
     return this
   }
 
-  fun cell(c: Callback<TableColumn<S, T>?, TableCell<S, T>?>?): TableColumnBuilder<S, T> {
+  fun cell(c: Callback<TableColumn<S, T>, TableCell<S, T>>): TableColumnBuilder<S, T> {
     column.cellFactory = c
     return this
   }
