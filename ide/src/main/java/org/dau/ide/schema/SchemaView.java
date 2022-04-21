@@ -10,8 +10,8 @@ import javafx.scene.control.Spinner;
 import org.dau.ide.action.FxAction;
 import org.dau.ide.action.ToolbarAction;
 import org.dau.ui.schematic.controls.FxSchemaView;
-import org.dau.ui.schematic.fx.model.FxBlock;
-import org.dau.ui.schematic.fx.model.FxSchema;
+import org.dau.ui.schematic.model.FxBlock;
+import org.dau.ui.schematic.model.FxSchema;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -39,8 +39,8 @@ public final class SchemaView extends ScrollPane {
     return new FxAction("icons/demo.png", "Add a demo block")
       .on(() -> {
         var block = new FxBlock(view.getSchema(), SchemaDemoBlock.class.getConstructors()[0]);
-        block.x.set(ThreadLocalRandom.current().nextDouble(500d));
-        block.y.set(ThreadLocalRandom.current().nextDouble(500d));
+        block.getX().set(ThreadLocalRandom.current().nextDouble(500d));
+        block.getY().set(ThreadLocalRandom.current().nextDouble(500d));
         view.getSchema().addBlock(block);
       });
   }

@@ -1,6 +1,6 @@
 package org.dau.ide.schema;
 
-import org.dau.ui.schematic.fx.model.FxSchema;
+import org.dau.ui.schematic.model.FxSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

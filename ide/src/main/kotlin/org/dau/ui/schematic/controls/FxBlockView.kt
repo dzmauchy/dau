@@ -22,9 +22,9 @@ import javafx.scene.layout.BorderStrokeStyle.SOLID
 import javafx.scene.paint.Color
 import javafx.scene.paint.Color.GRAY
 import org.dau.ui.icons.IconFactory
-import org.dau.ui.schematic.fx.model.FxBlock
-import org.dau.ui.schematic.fx.model.FxBlock.Input
-import org.dau.ui.schematic.fx.model.FxBlock.Output
+import org.dau.ui.schematic.model.FxBlock
+import org.dau.ui.schematic.model.FxBlock.Input
+import org.dau.ui.schematic.model.FxBlock.Output
 import org.dau.ui.utils.Draggables
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.ionicons4.Ionicons4Material
@@ -52,7 +52,7 @@ class FxBlockView(val block: FxBlock) : BorderPane() {
   init {
     border = BORDER
     background = BACKGROUND
-    center.text = block.getVar()
+    center.text = block.varName
     setCenter(center)
     setLeft(left)
     setRight(right)
@@ -172,7 +172,7 @@ class FxBlockView(val block: FxBlock) : BorderPane() {
     private fun onClick(ev: ActionEvent) {
       when (val data = this@FxBlockView.parent.userData) {
         is ConnectionData -> {
-          if (block.schema.addConnection(data.currentOut?.output, input)) {
+          if (block.schema.addConnection(data.currentOut!!.output, input)) {
             data.currentOut?.isSelected = false
             data.currentOut = null
           }

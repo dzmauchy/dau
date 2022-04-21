@@ -15,7 +15,7 @@ import org.dau.ide.main.dialogs.ProjectsDialog
 import org.dau.ide.main.menu.ProjectGroup
 import org.dau.ide.main.menu.ViewGroup
 import org.dau.ide.project.ProjectTab
-import org.dau.ui.schematic.fx.model.FxProject
+import org.dau.ui.schematic.model.FxProject
 import org.springframework.beans.factory.ObjectFactory
 import org.springframework.stereotype.Component
 

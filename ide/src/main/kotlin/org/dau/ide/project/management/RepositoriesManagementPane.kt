@@ -13,7 +13,7 @@ import org.dau.di.Init
 import org.dau.ide.l10n.Localization
 import org.dau.ide.l10n.Localization.l
 import org.dau.ui.icons.IconFactory
-import org.dau.ui.schematic.fx.model.FxProject
+import org.dau.ui.schematic.model.FxProject
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS
 import org.kordamp.ikonli.material.Material
 import org.kordamp.ikonli.metrizeicons.MetrizeIcons

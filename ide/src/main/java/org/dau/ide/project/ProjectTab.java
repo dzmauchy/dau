@@ -4,7 +4,7 @@ import javafx.scene.control.Tab;
 import org.dau.di.Ctx;
 import org.dau.ide.main.MainProjectTabs;
 import org.dau.ui.icons.IconFactory;
-import org.dau.ui.schematic.fx.model.FxProject;
+import org.dau.ui.schematic.model.FxProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
@@ -20,7 +20,7 @@ public class ProjectTab extends Tab {
     this.project = project;
     this.ctx = ctx;
     setGraphic(IconFactory.icon("icons/project.png", 20));
-    textProperty().bind(project.name);
+    textProperty().bind(project.getName());
     setContent(tabs);
     setOnCloseRequest(ev -> ctx.close());
   }

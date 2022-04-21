@@ -3,8 +3,8 @@ package org.dau.ide.main;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
-import org.dau.ui.schematic.fx.model.FxProject;
-import org.dau.ui.schematic.fx.model.FxSchema;
+import org.dau.ui.schematic.model.FxProject;
+import org.dau.ui.schematic.model.FxSchema;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
@@ -28,18 +28,18 @@ public class MainProjects {
     if (change.wasAdded()) {
       var project = change.getElementAdded();
       final SetChangeListener<FxSchema> l = e -> onChangeSchema(project, e);
-      project.schemas.addListener(l);
+      project.getSchemas().addListener(l);
       schemaListeners.put(project, l);
     }
     if (change.wasRemoved()) {
       var project = change.getElementRemoved();
       var listener = schemaListeners.remove(project);
-      project.schemas.removeListener(listener);
+      project.getSchemas().removeListener(listener);
     }
   }
 
   private void onChangeSchema(FxProject project, Change<? extends FxSchema> change) {
-    final var dir = directories.homeDir.resolve(project.id);
+    final var dir = directories.homeDir.resolve(project.getId());
     if (change.wasRemoved()) {
       var schema = change.getElementRemoved();
       var file = dir.resolve(schema.toFileName());

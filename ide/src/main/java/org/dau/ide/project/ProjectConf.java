@@ -1,7 +1,7 @@
 package org.dau.ide.project;
 
 import org.dau.ide.main.MainDirectories;
-import org.dau.ui.schematic.fx.model.FxProject;
+import org.dau.ui.schematic.model.FxProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,7 +22,7 @@ public class ProjectConf {
   public ProjectConf(@Autowired(required = false) FxProject project, MainDirectories directories) {
     this.project = project;
     try {
-      this.directory = directories.homeDir.resolve(project.id);
+      this.directory = directories.homeDir.resolve(project.getId());
       Files.createDirectories(directory);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

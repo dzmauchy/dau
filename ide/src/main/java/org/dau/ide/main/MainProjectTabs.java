@@ -7,7 +7,7 @@ import javafx.scene.control.TabPane;
 import org.dau.di.Ctx;
 import org.dau.ide.project.ProjectConf;
 import org.dau.ide.project.ProjectTab;
-import org.dau.ui.schematic.fx.model.FxProject;
+import org.dau.ui.schematic.model.FxProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
@@ -24,11 +24,11 @@ public final class MainProjectTabs extends TabPane {
     projects.projects.addListener((Change<? extends FxProject> c) -> {
       if (c.wasAdded()) {
         var project = c.getElementAdded();
-        var newCtx = new Ctx(ctx, project.name.get());
+        var newCtx = new Ctx(ctx, project.getName().get());
         var ih = (ChangeListener<String>) (o, ov, nv) -> newCtx.setDisplayName(nv);
-        project.name.addListener(ih);
+        project.getName().addListener(ih);
         newCtx.registerBean(ProjectConf.class, () -> new ProjectConf(project, directories));
-        newCtx.addApplicationListener((ContextClosedEvent ev) -> project.name.removeListener(ih));
+        newCtx.addApplicationListener((ContextClosedEvent ev) -> project.getName().removeListener(ih));
         newCtx.refresh();
         newCtx.start();
       }

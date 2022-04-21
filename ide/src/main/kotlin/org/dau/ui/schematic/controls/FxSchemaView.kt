@@ -12,9 +12,9 @@ import javafx.scene.effect.Glow
 import javafx.scene.layout.Pane
 import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color.rgb
-import org.dau.ui.schematic.fx.model.FxBlock
-import org.dau.ui.schematic.fx.model.FxBlockConnection
-import org.dau.ui.schematic.fx.model.FxSchema
+import org.dau.ui.schematic.model.FxBlock
+import org.dau.ui.schematic.model.FxBlockConnection
+import org.dau.ui.schematic.model.FxSchema
 import org.springframework.util.DigestUtils.md5Digest
 import java.lang.Byte.toUnsignedInt
 import java.nio.charset.StandardCharsets.UTF_8
@@ -34,8 +34,8 @@ class FxSchemaView(val schema: FxSchema) : StackPane() {
     connectionLayer.isPickOnBounds = false
     connectionLayer.isFocusTraversable = false
     children.addAll(connectionLayer, blockLayer)
-    schema.blocks.forEach { this.addBlock(it) }
-    schema.connections.forEach { this.addConnection(it) }
+    schema.getBlocks().forEach { this.addBlock(it) }
+    schema.getConnections().forEach { this.addConnection(it) }
     schema.addBlockListener(WeakSetChangeListener(onBlockChange))
     schema.addConnectionListener(WeakSetChangeListener(onConnectionChange))
   }
@@ -96,13 +96,13 @@ class FxSchemaView(val schema: FxSchema) : StackPane() {
     init {
       isPickOnBounds = false
 
-      val outView = blockViewMap[connection.out().block.id]!!
-      val inView = blockViewMap[connection.`in`().block.id]!!
+      val outView = blockViewMap[connection.out.block.id]!!
+      val inView = blockViewMap[connection.inp.block.id]!!
 
-      x0p = outView.getOutputX(connection.out())
-      y0p = outView.getOutputY(connection.out())
-      x1p = inView.getInputX(connection.`in`())
-      y1p = inView.getInputY(connection.`in`())
+      x0p = outView.getOutputX(connection.out)
+      y0p = outView.getOutputY(connection.out)
+      x1p = inView.getInputX(connection.inp)
+      y1p = inView.getInputY(connection.inp)
 
       path = FxConnectionPath(FxArrow(L, PHI), x0p, y0p, x1p, y1p)
       path.runningProperty().bind(hoverProperty())
@@ -137,10 +137,10 @@ class FxSchemaView(val schema: FxSchema) : StackPane() {
       if (x0 > x1) {
         val cy = this@FxSchemaView.height / 2.0
         val avgY = (y0 + y1) / 2.0
-        val h = connection.out().block.h.get() + connection.`in`().block.h.get()
+        val h = connection.out.block.h.get() + connection.inp.block.h.get()
         val offset = if (avgY < cy) -2.0 * h else 2.0 * h
-        path.setControl1(connection.out().block.w.get() * 2.0, y1 - y0)
-        path.setControl2(x1 - x0 - connection.`in`().block.w.get() * 2.0, y1 - y0 + (y1 - y0 + offset))
+        path.setControl1(connection.out.block.w.get() * 2.0, y1 - y0)
+        path.setControl2(x1 - x0 - connection.inp.block.w.get() * 2.0, y1 - y0 + (y1 - y0 + offset))
       } else {
         path.setControl1(2.0 * L, 0.0)
         path.setControl2((x0 + x1) / 2.0 - x0, (y0 + y1 + (y1 - y0) / 1.5) / 2.0 - y0)
@@ -149,7 +149,7 @@ class FxSchemaView(val schema: FxSchema) : StackPane() {
     }
 
     private fun calculateStroke() {
-      val bytes = md5Digest(connection.out().id.toByteArray(UTF_8))
+      val bytes = md5Digest(connection.out.id.toByteArray(UTF_8))
       val r1 = toUnsignedInt(bytes[0])
       val r2 = toUnsignedInt(bytes[1])
       val r3 = toUnsignedInt(bytes[2])

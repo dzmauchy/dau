@@ -2,7 +2,7 @@ package org.dau.ide.project;
 
 import org.dau.ide.main.MainDirectories;
 import org.dau.ide.main.MainProjects;
-import org.dau.ui.schematic.fx.model.FxProject;
+import org.dau.ui.schematic.model.FxProject;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public final class ProjectLifecycle {
   @EventListener
   public void onClose(ContextClosedEvent event) {
     try {
-      project.save(directories.homeDir.resolve(project.id));
+      project.save(directories.homeDir.resolve(project.getId()));
     } finally {
       projects.projects.remove(project);
     }

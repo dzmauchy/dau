@@ -10,8 +10,8 @@ import javafx.stage.Stage
 import org.dau.runtime.Block
 import org.dau.ui.fx.ThemeApplier
 import org.dau.ui.schematic.controls.FxSchemaView
-import org.dau.ui.schematic.fx.model.FxBlock
-import org.dau.ui.schematic.fx.model.FxSchema
+import org.dau.ui.schematic.model.FxBlock
+import org.dau.ui.schematic.model.FxSchema
 import java.util.*
 
 object FxSchemaViewDemo {

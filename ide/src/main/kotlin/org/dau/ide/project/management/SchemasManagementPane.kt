@@ -16,8 +16,8 @@ import org.dau.di.Init
 import org.dau.ide.l10n.Localization
 import org.dau.ide.project.ProjectSchemas
 import org.dau.ui.icons.IconFactory
-import org.dau.ui.schematic.fx.model.FxProject
-import org.dau.ui.schematic.fx.model.FxSchema
+import org.dau.ui.schematic.model.FxProject
+import org.dau.ui.schematic.model.FxSchema
 import org.dau.ui.utils.TableColumnBuilder
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS
 import org.kordamp.ikonli.material.Material
@@ -33,8 +33,8 @@ import org.springframework.stereotype.Component
 @Qualifier("management")
 @Suppress("UNUSED_PARAMETER")
 class SchemasManagementPane(
-  private val project: FxProject,
-  private val projectSchemas: ProjectSchemas
+    private val project: FxProject,
+    private val projectSchemas: ProjectSchemas
 ) : TitledPane() {
 
   private val schemaSetChangeListener = SetChangeListener<FxSchema> { this.onUpdateSchemas(it) }

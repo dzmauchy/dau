@@ -13,13 +13,11 @@ import org.dau.di.PrototypeComponent;
 import org.dau.ide.l10n.Localization;
 import org.dau.ide.main.MainDirectories;
 import org.dau.ide.main.MainQualifier;
-import org.dau.ui.schematic.fx.model.FxProject;
+import org.dau.ui.schematic.model.FxProject;
 import org.dau.ui.utils.TableColumnBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static org.dau.ide.l10n.Localization.binding;
 
 @PrototypeComponent
 public class ProjectsDialog extends Dialog<ObservableList<Path>> {
@@ -52,13 +50,13 @@ public class ProjectsDialog extends Dialog<ObservableList<Path>> {
     );
     table.getColumns().add(
       new TableColumnBuilder<Path, String>("Name")
-        .value(f -> new SimpleStringProperty(FxProject.load(f.getValue()).name.get()))
+        .value(f -> new SimpleStringProperty(FxProject.Companion.load(f.getValue()).getName().get()))
         .width(300)
         .build()
     );
     try (var ds = Files.newDirectoryStream(directories.homeDir)) {
       for (var path : ds) {
-        if (FxProject.isProject(path)) {
+        if (FxProject.Companion.isProject(path)) {
           table.getItems().add(path);
         }
       }
