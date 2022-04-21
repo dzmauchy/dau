@@ -2,6 +2,7 @@ package org.dau.ide.schema
 
 import org.dau.runtime.Block
 
+@Suppress("UNUSED_PARAMETER")
 @Block("Demo block")
 class SchemaDemoBlock(sync: String, name: String, code: Int, len: Double, angle: Double, speed: Double) {
 

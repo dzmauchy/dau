@@ -34,7 +34,7 @@ public final class MainProjectTabs extends TabPane {
       }
       if (c.wasRemoved()) {
         var project = c.getElementRemoved();
-        getTabs().removeIf(tab -> tab instanceof ProjectTab t && t.project == project);
+        getTabs().removeIf(tab -> tab instanceof ProjectTab t && t.getProject() == project);
       }
     });
   }

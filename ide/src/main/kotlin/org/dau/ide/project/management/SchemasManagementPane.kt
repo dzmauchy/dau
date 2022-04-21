@@ -79,7 +79,7 @@ class SchemasManagementPane(
       .value { f ->
         val box = HBox(
           Button(null, IconFactory.icon(Material.OPEN_IN_NEW, 16)).apply {
-            setOnAction { projectSchemas.addSchema(f?.value) }
+            setOnAction { projectSchemas.addSchema(f!!.value) }
           }
         )
         box.alignment = Pos.CENTER

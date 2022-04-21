@@ -17,7 +17,7 @@ class SchemaTab(val ctx: Ctx, val schema: FxSchema, schemaPane: SchemaPane) : Ta
     textProperty().bind(schema.name)
     graphic = IconFactory.icon("icons/blocks.png", 20)
     content = schemaPane
-    setOnCloseRequest { ev -> ctx.close() }
+    setOnCloseRequest { ctx.close() }
   }
 
   @Autowired
