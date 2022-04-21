@@ -21,7 +21,7 @@ public final class ProjectSchemas {
   }
 
   public void addSchema(FxSchema schema) {
-    if (tabs.getObject().getTabs().stream().anyMatch(t -> t instanceof SchemaTab v && v.schema.getId().equals(schema.getId()))) {
+    if (tabs.getObject().getTabs().stream().anyMatch(t -> t instanceof SchemaTab v && v.getSchema().getId().equals(schema.getId()))) {
       return;
     }
     var newCtx = new Ctx(ctx, schema.getName().get());

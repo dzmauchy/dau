@@ -20,7 +20,7 @@ public class ProjectTabs extends TabPane {
     project.getSchemas().addListener((SetChangeListener.Change<? extends FxSchema> c) -> {
       if (c.wasRemoved()) {
         var schema = c.getElementRemoved();
-        getTabs().removeIf(tab -> tab instanceof SchemaTab t && t.schema == schema);
+        getTabs().removeIf(tab -> tab instanceof SchemaTab t && t.getSchema() == schema);
       }
     });
   }
