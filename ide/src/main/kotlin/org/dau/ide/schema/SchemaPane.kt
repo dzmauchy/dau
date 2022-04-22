@@ -5,18 +5,14 @@ import javafx.scene.control.Separator
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
 import org.dau.di.Ctx
-import org.dau.ide.action.FxActions.fillToolbar
+import org.dau.ide.action.FxAction.fillToolbar
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class SchemaPane : BorderPane() {
 
-  private val toolBar = ToolBar()
-
-  init {
-    top = toolBar
-  }
+  private val toolBar = ToolBar().also { top = it }
 
   @Autowired
   fun initWith(schemaView: SchemaView) {
