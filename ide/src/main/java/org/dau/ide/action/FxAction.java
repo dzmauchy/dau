@@ -44,17 +44,17 @@ public final class FxAction {
   public static final int MENU_ICON_SIZE = 20;
   public static final int TOOLBAR_ICON_SIZE = 24;
 
-  final SimpleStringProperty text = new SimpleStringProperty();
-  final SimpleStringProperty description = new SimpleStringProperty();
-  final SimpleStringProperty icon = new SimpleStringProperty();
-  final SimpleObjectProperty<KeyCombination> key = new SimpleObjectProperty<>();
-  final SimpleObjectProperty<EventHandler<ActionEvent>> handler = new SimpleObjectProperty<>();
-  final SimpleBooleanProperty disabled = new SimpleBooleanProperty();
+  private final SimpleStringProperty text = new SimpleStringProperty();
+  private final SimpleStringProperty description = new SimpleStringProperty();
+  private final SimpleStringProperty icon = new SimpleStringProperty();
+  private final SimpleObjectProperty<KeyCombination> key = new SimpleObjectProperty<>();
+  private final SimpleObjectProperty<EventHandler<ActionEvent>> handler = new SimpleObjectProperty<>();
+  private final SimpleBooleanProperty disabled = new SimpleBooleanProperty();
 
   public Object linkedObject;
 
-  BooleanProperty selected;
-  ObservableList<FxAction> subItems;
+  private BooleanProperty selected;
+  private ObservableList<FxAction> subItems;
 
   public FxAction() {
   }
