@@ -1,7 +1,7 @@
 package org.dau.ide.schema
 
-import org.dau.ide.action.FxAction
-import org.dau.ide.action.ToolbarAction
+import org.dau.ui.action.FxAction
+import org.dau.ui.action.ToolbarAction
 import org.dau.ide.project.ProjectConf
 import org.springframework.stereotype.Component
 

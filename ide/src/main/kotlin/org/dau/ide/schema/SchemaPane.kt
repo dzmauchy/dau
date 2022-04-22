@@ -5,7 +5,7 @@ import javafx.scene.control.Separator
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
 import org.dau.di.Ctx
-import org.dau.ide.action.FxAction.fillToolbar
+import org.dau.ui.action.FxAction.Companion.fillToolbar
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

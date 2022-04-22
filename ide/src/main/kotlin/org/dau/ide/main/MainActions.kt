@@ -8,8 +8,8 @@ import javafx.collections.SetChangeListener
 import javafx.scene.control.Tab
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
-import org.dau.ide.action.ActionGroup
-import org.dau.ide.action.FxAction
+import org.dau.ui.action.ActionGroup
+import org.dau.ui.action.FxAction
 import org.dau.ide.l10n.Localization
 import org.dau.ide.main.dialogs.ProjectsDialog
 import org.dau.ide.main.menu.ProjectGroup

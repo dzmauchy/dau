@@ -1,7 +1,7 @@
 package org.dau.ide.main
 
 import javafx.scene.control.MenuBar
-import org.dau.ide.action.FxAction.fillMenuBar
+import org.dau.ui.action.FxAction.Companion.fillMenuBar
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component

@@ -6,8 +6,8 @@ import javafx.beans.value.WeakChangeListener
 import javafx.scene.Group
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.Spinner
-import org.dau.ide.action.FxAction
-import org.dau.ide.action.ToolbarAction
+import org.dau.ui.action.FxAction
+import org.dau.ui.action.ToolbarAction
 import org.dau.ui.schematic.controls.FxSchemaView
 import org.dau.ui.schematic.model.FxBlock
 import org.dau.ui.schematic.model.FxSchema
