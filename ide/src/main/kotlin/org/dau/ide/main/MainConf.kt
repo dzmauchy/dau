@@ -24,6 +24,7 @@ open class MainConf(@param:Autowired(required = false) private val primaryStage:
 
   @EventListener
   fun onStart(event: ContextStartedEvent) {
+    assert(event.source != null)
     primaryStage.icons.add(IconFactory.image("icons/schema.png"))
     primaryStage.title = "IDE"
     primaryStage.show()

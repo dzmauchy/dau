@@ -72,9 +72,9 @@ class FxProject {
       root.appendChild(dependenciesElement)
       dependencies.forEach { dep ->
         val depElement = doc.createElement("dependency")
-        depElement.setAttribute("group", dep.group())
-        depElement.setAttribute("name", dep.name())
-        depElement.setAttribute("version", dep.version())
+        depElement.setAttribute("group", dep.group)
+        depElement.setAttribute("name", dep.name)
+        depElement.setAttribute("version", dep.version)
         dependenciesElement.appendChild(depElement)
       }
 
