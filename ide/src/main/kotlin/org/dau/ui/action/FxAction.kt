@@ -177,16 +177,14 @@ class FxAction {
       }
     }
 
-    @JvmStatic fun fillMenuBar(ctx: ApplicationContext, menuBar: MenuBar, qualifier: Class<out Annotation>) {
+    @JvmStatic
+    fun fillMenuBar(ctx: ApplicationContext, menuBar: MenuBar, qualifier: Class<out Annotation>) {
       val menuActions = TreeMap<ActionKey, TreeMap<ActionKey, ArrayList<FxAction>>>()
       forEach(ctx as Ctx, qualifier, MenuBarGroup::class.java).accept { action, definition ->
         val metadata = definition.factoryMethodMetadata!!
         val barKey = key(metadata, MenuBarGroup::class.java)
         val key = key(metadata, ActionGroup::class.java)
-        menuActions
-          .computeIfAbsent(barKey) { TreeMap() }
-          .computeIfAbsent(key) { ArrayList() }
-          .add(action)
+        menuActions.computeIfAbsent(barKey) { TreeMap() }.computeIfAbsent(key) { ArrayList() }.add(action)
       }
       menuActions.forEach { (barKey, groups) ->
         val menu = Menu()
@@ -219,20 +217,15 @@ class FxAction {
             c.removed.forEach { a -> menuItems.remove(map.remove(a)) }
           }
           if (c.wasAdded()) {
-            val newItems = c.addedSubList.stream()
-              .map { a ->
-                val menuItem = menuItem(a)
-                map[a] = menuItem
-                menuItem
-              }
-              .toList()
+            val newItems = c.addedSubList.stream().map { a ->
+              val menuItem = menuItem(a)
+              map[a] = menuItem
+              menuItem
+            }.toList()
             menuItems.addAll(c.from, newItems)
           }
           if (c.wasPermutated()) {
-            val items = IntStream.range(c.from, c.to)
-              .map(c::getPermutation)
-              .mapToObj { menuItems[it] }
-              .toList()
+            val items = IntStream.range(c.from, c.to).map(c::getPermutation).mapToObj { menuItems[it] }.toList()
             menuItems.remove(c.from, c.to)
             menuItems.addAll(c.from, items)
           }
@@ -268,14 +261,13 @@ class FxAction {
       return menuItem
     }
 
-    @JvmStatic fun fillToolbar(context: ApplicationContext, toolBar: ToolBar, qualifier: Class<out Annotation>) {
+    @JvmStatic
+    fun fillToolbar(context: ApplicationContext, toolBar: ToolBar, qualifier: Class<out Annotation>) {
       val toolbarActions = TreeMap<ActionKey, ArrayList<FxAction>>()
       forEach(context as Ctx, ToolbarAction::class.java, qualifier).accept { action, definition ->
         val metadata = definition.factoryMethodMetadata!!
         val key = key(metadata, ActionGroup::class.java)
-        toolbarActions
-          .computeIfAbsent(key) { ArrayList() }
-          .add(action)
+        toolbarActions.computeIfAbsent(key) { ArrayList() }.add(action)
       }
       val first = AtomicBoolean(true)
       toolbarActions.forEach { _, actions ->
@@ -295,27 +287,18 @@ class FxAction {
         if (selected == null) {
           Button()
         } else {
-          val button = ToggleButton()
-          button.selectedProperty().bind(selected)
-          button
+          ToggleButton().apply { selectedProperty().bind(selected) }
         }
       } else {
-        val button = MenuButton()
-        fillMenuItems(button.items, subItems)
-        button
+        MenuButton().apply { fillMenuItems(items, subItems) }
       }
       control.isFocusTraversable = false
       control.graphicProperty().bind(iconBinding(action.icon, TOOLBAR_ICON_SIZE))
       control.disableProperty().bind(action.disabled)
-      control.setOnAction { ev ->
-        val h = action.handler.get()
-        h?.handle(ev)
-      }
+      control.setOnAction { action.handler.get()?.handle(it) }
       val text = action.text.get()
       if (text != null) {
-        val tooltip = Tooltip()
-        tooltip.textProperty().bind(action.text)
-        control.tooltip = tooltip
+        control.tooltip = Tooltip().apply { textProperty().bind(action.text) }
       }
       return control
     }
